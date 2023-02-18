@@ -88,6 +88,7 @@ def update_uptime_kuma():
     print("Update Uptime Kuma")
     uptime_kuma_status.clear()
     status_list = get_uptime_kuma_status()
+    print("Got " + str(len(status_list)) + " items from Uptime Kuma")
     for ing in ingress:
         if ing.uptime_kuma != -1:
             for status in status_list:
