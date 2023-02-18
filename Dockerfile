@@ -6,7 +6,7 @@ COPY requirements.txt requirements.txt
 RUN pip install -r requirements.txt
 
 COPY . .
-RUN chown 1000:1000 /app
+RUN chown 1000:1000 /app -R
 
 RUN apt-get update && apt-get install nodejs npm -y
 RUN npm install
