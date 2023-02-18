@@ -22,7 +22,7 @@ css = Bundle("src/main.css", output="dist/main.css")
 assets.register("css", css)
 css.build()
 
-ingress = []
+ingress = set([])
 ingress_groups = {}
 uptime_kuma_status = {}
 global_bookmarks = {}

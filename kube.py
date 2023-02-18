@@ -22,7 +22,7 @@ def get_ingress():
                 parsed_ingress = parse_ingress(i, app_config)
                 if parsed_ingress:
                     ingress_list.append(parsed_ingress)
-    return ingress_list
+    return set(ingress_list)
 
 
 def parse_ingress(ingress, app_config):
@@ -74,7 +74,7 @@ def parse_ingress(ingress, app_config):
 def parse_custom_apps(app_config, ingress_groups, ingress_list):
     print("Custom apps")
     if "customApps" not in app_config.keys():
-        return ingress_groups, ingress_list
+        return ingress_groups, set(ingress_list)
     apps = app_config["customApps"]
     if apps:
         print("Custom apps parsing")
@@ -90,9 +90,9 @@ def parse_custom_apps(app_config, ingress_groups, ingress_list):
                 custom_apps.append(ingress_service)
                 ingress_list.append(ingress_service)
             ingress_groups[name] = custom_apps
-        return ingress_groups, ingress_list
+        return ingress_groups, set(ingress_list)
     else:
-        return ingress_groups, ingress_list
+        return ingress_groups, set(ingress_list)
 
 
 class IngressService:
