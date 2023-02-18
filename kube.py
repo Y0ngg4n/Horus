@@ -72,6 +72,7 @@ def parse_ingress(ingress, app_config):
 
 
 def parse_custom_apps(app_config, ingress_groups, ingress_list):
+    print("Custom apps")
     if "customApps" not in app_config.keys():
         return ingress_groups, ingress_list
     apps = app_config["customApps"]
