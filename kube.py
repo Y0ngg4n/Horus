@@ -90,8 +90,6 @@ def parse_custom_apps(app_config, ingress_groups, ingress_list):
                 custom_apps.append(ingress_service)
                 ingress_list.append(ingress_service)
             ingress_groups[name] = custom_apps
-        print(ingress_groups)
-        print(ingress_list)
         return ingress_groups, ingress_list
     else:
         return ingress_groups, ingress_list
