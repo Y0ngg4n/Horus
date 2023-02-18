@@ -71,10 +71,13 @@ def load_config():
 
 def update_ingress():
     global ingress, ingress_groups
+    config = load_config()
     print("Updating Ingress")
     ingress = kube.get_ingress()
     ingress_groups.clear()
     for ing in ingress:
+        if ing.name in config["excludeIngress"]:
+            continue
         if ing.group in ingress_groups.keys():
             item_list = ingress_groups[ing.group]
             item_list.append(ing)

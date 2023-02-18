@@ -41,8 +41,10 @@ def parse_ingress(ingress, app_config):
                                                  icon_url="http://" + host + first_path.path + "favicon.ico", group="")
             if not app_config['ingress']['allEnabled']:
                 enabled = ingress.metadata.annotations.get('horus/enabled')
+                print(ingress.metadata.annotations.get('horus/name') + " " + enabled)
                 if not enabled:
                     return None
+
             ingress_service.group = ingress.metadata.namespace
 
             name = ingress.metadata.annotations.get('horus/name')
