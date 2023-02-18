@@ -28,14 +28,7 @@ uptime_kuma_status = {}
 global_bookmarks = {}
 api = None
 
-
-@app.route("/health")
-def homepage():
-    return jsonify({"status": "healthy"})
-
-
-@app.route("/", defaults={'path': ''})
-@app.route('/<path:path>')
+@app.route("/")
 def homepage():
     config = load_config()
     return render_template("index.html", title=config["title"], showGreeting=config["showGreeting"],
