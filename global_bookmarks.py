@@ -1,4 +1,6 @@
 def parse_global_bookmarks(config):
+    if "globalBookmarks" not in config.keys():
+        return {}
     bm = config["globalBookmarks"]
     if bm:
         group_bookmarks = {}
