@@ -1,4 +1,5 @@
 .idea/
 .env
 config.yaml
+config/config.yaml
 node_modules
