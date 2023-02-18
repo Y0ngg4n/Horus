@@ -76,7 +76,6 @@ def parse_custom_apps(app_config, ingress_groups, ingress_list):
         return ingress_groups, ingress_list
     apps = app_config["customApps"]
     if apps:
-        group_ingress = {}
         for group in apps:
             custom_apps = []
             name = group['group']
@@ -88,8 +87,10 @@ def parse_custom_apps(app_config, ingress_groups, ingress_list):
                                description=app["description"], uptime_kuma=app["uptimeKuma"])
                 custom_apps.append(ingress_service)
                 ingress_list.append(ingress_service)
-            group_ingress[name] = custom_apps
-        return group_ingress, ingress_list
+            ingress_groups[name] = custom_apps
+        print(ingress_groups)
+        print(ingress_list)
+        return ingress_groups, ingress_list
     else:
         return ingress_groups, ingress_list
 
