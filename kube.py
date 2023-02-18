@@ -76,6 +76,7 @@ def parse_custom_apps(app_config, ingress_groups, ingress_list):
         return ingress_groups, ingress_list
     apps = app_config["customApps"]
     if apps:
+        print("Custom apps parsing")
         for group in apps:
             custom_apps = []
             name = group['group']
