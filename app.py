@@ -106,7 +106,6 @@ def update_uptime_kuma():
                     if latest_heartbeat:
                         uptime_kuma_status[ing] = latest_heartbeat["status"]
                     break
-    print(uptime_kuma_status)
 
 
 def run_scheduler():
