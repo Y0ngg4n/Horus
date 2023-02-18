@@ -31,6 +31,8 @@ api = None
 @app.route("/")
 def homepage():
     config = load_config()
+    print(ingress)
+    print(ingress_groups)
     return render_template("index.html", title=config["title"], showGreeting=config["showGreeting"],
                            showSearch=config["showSearch"],
                            showAppGroups=config["showAppGroups"],
