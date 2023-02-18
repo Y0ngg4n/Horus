@@ -71,6 +71,7 @@ def load_config():
 
 def update_ingress():
     global ingress, ingress_groups
+    parse_config_items()
     config = load_config()
     print("Updating Ingress")
     ingress = kube.get_ingress()
