@@ -102,6 +102,7 @@ def update_uptime_kuma():
                             latest_heartbeat = heartbeat
                     if latest_heartbeat:
                         uptime_kuma_status[ing] = latest_heartbeat["status"]
+                        print("Updated Uptime Kuma status for " + ing.name)
                     break
 
 
