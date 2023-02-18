@@ -76,7 +76,7 @@ def update_ingress():
     ingress = kube.get_ingress()
     ingress_groups.clear()
     for ing in ingress:
-        if ing.name in config["excludeIngress"]:
+        if "excludeIngress" in config.keys() and ing.name in config["excludeIngress"]:
             continue
         if ing.group in ingress_groups.keys():
             item_list = ingress_groups[ing.group]
