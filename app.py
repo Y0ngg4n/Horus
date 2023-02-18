@@ -83,7 +83,7 @@ def update_ingress():
             continue
         if ing.group in ingress_groups.keys():
             item_list = ingress_groups[ing.group]
-            item_list.append(ing)
+            item_list.add(ing)
             ingress_groups[ing.group] = item_list
         else:
             ingress_groups[ing.group] = [ing, ]

@@ -14,14 +14,14 @@ def get_ingress():
         for i in ret.items:
             parsed_ingress = parse_ingress(i, app_config)
             if parsed_ingress:
-                ingress_list.append(parsed_ingress)
+                ingress_list.add(parsed_ingress)
     else:
         for ns in app_config['ingress']['namespaces']:
             ret = v1.list_namespaced_ingress(namespace=ns, watch=False)
             for i in ret.items:
                 parsed_ingress = parse_ingress(i, app_config)
                 if parsed_ingress:
-                    ingress_list.append(parsed_ingress)
+                    ingress_list.add(parsed_ingress)
     return set(ingress_list)
 
 
@@ -87,8 +87,8 @@ def parse_custom_apps(app_config, ingress_groups, ingress_list):
                 ingress_service = IngressService(name=app["name"], url=app["url"], icon_url=app["icon"],
                                target_blank=app["targetBlank"], group=name,
                                description=app["description"], uptime_kuma=app["uptimeKuma"])
-                custom_apps.append(ingress_service)
-                ingress_list.append(ingress_service)
+                custom_apps.add(ingress_service)
+                ingress_list.add(ingress_service)
             ingress_groups[name] = custom_apps
         return ingress_groups, set(ingress_list)
     else:
