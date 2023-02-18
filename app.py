@@ -117,8 +117,6 @@ def run_scheduler():
 
 def parse_config_items():
     global ingress, ingress_groups, global_bookmarks
-    ingress.clear()
-    ingress_groups.clear()
     global_bookmarks = gb.parse_global_bookmarks(load_config())
     ingress_groups, ingress = kube.parse_custom_apps(load_config(), ingress_groups, ingress)
 

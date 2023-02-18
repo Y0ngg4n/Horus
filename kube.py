@@ -82,7 +82,7 @@ def parse_custom_apps(app_config, ingress_groups, ingress_list):
             custom_apps = []
             name = group['group']
             if name in ingress_groups.keys():
-                custom_apps = ingress_groups[group]
+                custom_apps = ingress_groups[name]
             for app in group["apps"]:
                 ingress_service = IngressService(name=app["name"], url=app["url"], icon_url=app["icon"],
                                target_blank=app["targetBlank"], group=name,
