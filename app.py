@@ -14,7 +14,7 @@ from waitress import serve
 
 load_dotenv()
 
-app: Flask = Flask(__name__)
+app: Flask = Flask(__name__, static_folder='app', static_url_path="/app")
 
 assets = Environment(app)
 css = Bundle("src/main.css", output="dist/main.css")
