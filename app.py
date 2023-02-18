@@ -45,6 +45,10 @@ def homepage():
                            primaryColor=config["primaryColor"], accentColor=config["accentColor"],
                            onlineColor=config["onlineColor"], offlineColor=config["offlineColor"])
 
+@app.route("/health")
+def homepage():
+    return "OK"
+
 
 def uptime_kuma():
     global api
