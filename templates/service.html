@@ -1,0 +1,24 @@
+<div class="p-2 service-item">
+    <a href={{ ing.url }} {% if alwaysTargetBlank %} target="_blank" {% endif %}>
+        {% if showAppStatus %}
+            {% if uptime_kuma_status[ing] %}
+                {% set border_color = onlineColor %}
+            {% else %}
+                {% set border_color = offlineColor %}
+            {% endif %}
+        {% else %}
+            {% set border_color = accentColor %}
+        {% endif %}
+        <div class="h-full flex items-center border-2 p-4 rounded-lg" style="border-color: {{ border_color }}">
+            <img alt="icon" class="w-16 h-16 bg-gray-100 object-cover object-center flex-shrink-0 rounded-full mr-4"
+                 src={{ ing.icon_url }}>
+            <div class="flex-grow">
+                <p class="text-base title-font font-medium service-item-name break-all">{{ ing.name }}</p>
+                <p class="service-item-description break-all">{{ ing.description }}</p>
+                {% if showAppUrls %}
+                    <h6 class="break-all">{{ ing.url }}</h6>
+                {% endif %}
+            </div>
+        </div>
+    </a>
+</div>

@@ -1,0 +1,13 @@
+<div class="mx-auto container pt-12">
+    <h2 class="text-4xl font-bold">Bookmarks</h2>
+    <div class="grid grid-cols-4 p-4">
+        {% for group in global_bookmarks.keys() %}
+            <div class="p-4 text-2xl">
+                <h3 class="text-2xl">{{ group }}</h3>
+                {% for gb in global_bookmarks[group] %}
+                    {% include "bookmark.html" %}
+                {% endfor %}
+            </div>
+        {% endfor %}
+    </div>
+</div>

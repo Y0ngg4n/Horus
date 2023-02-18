@@ -1,0 +1,4 @@
+.idea/
+.env
+config.yaml
+node_modules

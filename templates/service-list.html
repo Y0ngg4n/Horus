@@ -1,0 +1,41 @@
+<div>
+    <div class="container px-5 py-6 mx-auto">
+        {% if showSearch %}
+            <div class="mx-auto xl:w-1/2 lg:w-1/2 md:1/2 w-full">
+                <div class="relative">
+                    <div class="absolute inset-y-0 left-0 flex items-center pl-3 pointer-events-none">
+                        <svg aria-hidden="true" class="w-5 h-5 text-gray-500 dark:text-gray-400"
+                             fill="{{ accentColor }}"
+                             stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                  d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"></path>
+                        </svg>
+                    </div>
+                    <input type="search" id="search-bar"
+                           class="block w-full p-4 pl-10 searchBar form-control block py-3 text-xl"
+                           placeholder="Filter services ..." onkeyup="SearchAndFilter()">
+                </div>
+            </div>
+        {% endif %}
+        <div class="">
+            {% if showAppGroups %}
+                {% for group in ingress_groups %}
+                    <div class="p-4 service-item-group">
+                        <h2 class="p-4 text-2xl service-item-group-label">{{ group }}</h2>
+                        <div class="grid lg:grid-cols-4 md:grid-cols-2 grid-cols-1">
+                            {% for ing in ingress_groups[group] %}
+                                {% include "service.html" %}
+                            {% endfor %}
+                        </div>
+                    </div>
+                {% endfor %}
+            {% else %}
+                <div class="p-4 grid lg:grid-cols-4 md:grid-cols-2 grid-cols-1">
+                    {% for ing in ingress %}
+                        {% include "service.html" %}
+                    {% endfor %}
+                </div>
+            {% endif %}
+        </div>
+    </div>
+</div>

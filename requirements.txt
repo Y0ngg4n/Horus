@@ -1,0 +1,9 @@
+Flask
+Flask-Assets
+pytailwindcss
+uptime-kuma-api
+python-dotenv
+PyYaml
+kubernetes
+schedule
+waitress

@@ -1,0 +1,46 @@
+<!-- templates/base.html -->
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    {% assets 'css' %}
+        <link rel="stylesheet" href="{{ ASSET_URL }}">
+    {% endassets %}
+    <style>
+        body {
+            background-color: {{ backgroundColor }};
+            color: {{ primaryColor }};
+        }
+
+        h1, h2, h3, h4, h5, h6 {
+            color: {{ accentColor }};
+        }
+
+        .searchBar {
+            color: {{ accentColor }};
+            border: 0;
+            outline: 0;
+            background: transparent;
+            border-bottom: 2px solid{{ primaryColor }};
+        }
+    </style>
+
+    <title>{{ title }}</title>
+</head>
+<body style=>
+{% if showGreeting %}
+    <div class="container px-5 py-12 mx-auto"><h1 class="text-4xl items-center text-center font-bold">
+    {{ greeting }}</h1>
+{% endif %}
+</div>
+{% include "service-list.html" %}
+{% if showGlobalBookmarks %}
+    {% include "global-bookmarks.html" %}
+{% endif %}
+<script src="/static/dist/main.js"></script>
+</body>
+</html>

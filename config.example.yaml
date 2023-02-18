@@ -1,0 +1,34 @@
+greeting: Welcome, Searcher
+title: Home
+backgroundColor: "#232530"
+primaryColor: "#E95678"
+accentColor: "#FAB795"
+onlineColor: "#60A561"
+offlineColor: "#D7263D"
+showSearch: true
+showGreeting: true
+showApps: true
+showAppGroups: true
+showAppUrls: true
+showAppInfo: true
+showAppStatus: true
+showGlobalBookmarks: true
+showBookmarkGroups: true
+alwaysTargetBlank: true
+ingress:
+  all: true
+  allEnabled: true
+  namespaces:
+    - media
+    - storage
+uptime-kuma:
+  url: https://example.uptime-kuma.com
+  username: admin
+  password: SUPERSECRETPASSWORD
+globalBookmarks:
+  - group: Search
+    bookmarks:
+      - name: DuckDuckGo
+        icon: 'https://duckduckgo.com/about'
+        url: 'https://duck.com'
+        targetBlank: true
