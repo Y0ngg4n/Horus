@@ -116,6 +116,7 @@ def run_scheduler():
 
 if __name__ == "__main__":
     global_bookmarks = gb.parse_global_bookmarks(load_config())
+    ingress, ingress_groups = kube.parse_ingress(load_config(), ingress)
     uptime_kuma()
     update_ingress()
     update_uptime_kuma()

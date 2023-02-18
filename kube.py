@@ -34,11 +34,13 @@ def parse_ingress(ingress, app_config):
             if ingress.spec.tls[0] and host in ingress.spec.tls[0].hosts:
                 ingress_service = IngressService(url="https://" + host + first_path.path, name="", description="",
                                                  uptime_kuma=-1,
-                                                 icon_url="https://" + host + first_path.path + "favicon.ico", group="")
+                                                 icon_url="https://" + host + first_path.path + "favicon.ico", group="",
+                                                 target_blank=False)
             else:
                 ingress_service = IngressService(url="http://" + host + first_path.path, name="", description="",
                                                  uptime_kuma=-1,
-                                                 icon_url="http://" + host + first_path.path + "favicon.ico", group="")
+                                                 icon_url="http://" + host + first_path.path + "favicon.ico", group="",
+                                                 target_blank=False)
             if not app_config['ingress']['allEnabled']:
                 enabled = ingress.metadata.annotations.get('horus/enabled')
                 if not enabled:
@@ -50,7 +52,8 @@ def parse_ingress(ingress, app_config):
             group = ingress.metadata.annotations.get('horus/group')
             description = ingress.metadata.annotations.get('horus/description')
             uptime_kuma = ingress.metadata.annotations.get('horus/uptime-kuma')
-            icon_url = ingress.metadata.annotations.get('horus/icon_url')
+            icon_url = ingress.metadata.annotations.get('horus/icon-url')
+            target_blank = ingress.metadata.annotations.get('horus/target-blank')
             if name:
                 ingress_service.name = name
             else:
@@ -63,14 +66,41 @@ def parse_ingress(ingress, app_config):
                 ingress_service.iconUrl = int(icon_url)
             if group:
                 ingress_service.group = group
+            if target_blank:
+                ingress_service.target_blank = target_blank
             return ingress_service
 
 
+def parse_custom_apps(app_config, ingress):
+    if "customApps" not in app_config.keys():
+        return {}
+    apps = app_config["customApps"]
+    if apps:
+        group_ingress = {}
+        for group in apps:
+            custom_apps = []
+            if group in ingress.keys():
+                custom_apps = ingress[group]
+            name = group['group']
+            for app in group["apps"]:
+                ingress_service = IngressService(name=app["name"], url=app["url"], icon_url=app["icon"],
+                               target_blank=app["targetBlank"], group=name,
+                               description=app["description"], uptime_kuma=app["uptimeKuma"])
+                custom_apps.append(ingress_service)
+                ingress.append(ingress_service)
+            group_ingress[name] = custom_apps
+        return group_ingress, ingress
+    else:
+        return {}
+
+
 class IngressService:
-    def __init__(self, name: str, description: str, group: str, url: str, icon_url: str, uptime_kuma: int):
+    def __init__(self, name: str, description: str, group: str, url: str, icon_url: str, uptime_kuma: int,
+                 target_blank: bool):
         self.name = name
         self.description = description
         self.url = url
         self.group = group
         self.icon_url = icon_url
         self.uptime_kuma = uptime_kuma
+        self.target_blank = target_blank

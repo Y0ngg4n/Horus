@@ -17,12 +17,12 @@ Hajimari looks for specific annotations on ingresses.
 
 - Add the following annotations to your ingresses in order for it to be discovered by Hajimari:
 
-| Annotation          | Description                                                                                                                                          | Required |
-|---------------------|------------------------------------------------------------------------------------------------------------------------------------------------------|----------|
-| `horus/enable`      | Add this with value `true` to the ingress of the app you want to show                                                                                | `true`   |
-| `horus/icon`        | Icon URL, if not provided Favicon is used                                                                                                            | `false`  |
-| `horus/appName`     | A custom name for your application. Use if you don't want to use the name of the ingress                                                             | `false`  |
-| `horus/group`       | A custom group name. Use if you want the application to show in a different group than the namespace it is running in                                | `false`  |
-| `horus/url`         | A URL for the Hajimari app (This will override the ingress URL). It MUST begin with a scheme i.e., `http://` or `https://`                           | `false`  |
-| `horus/targetBlank` | Determines if links should open in new tabs/windows                                                                                                  | `false`  |
-| `horus/description` | A short description of the Hajimari app                                                                                                              | `false`  |
+| Annotation           | Description                                                                                                                                          | Required |
+|----------------------|------------------------------------------------------------------------------------------------------------------------------------------------------|----------|
+| `horus/enabled`      | Add this with value `true` to the ingress of the app you want to show                                                                                | `true`   |
+| `horus/icon-url`     | Icon URL, if not provided Favicon is used                                                                                                            | `false`  |
+| `horus/name`         | A custom name for your application. Use if you don't want to use the name of the ingress                                                             | `false`  |
+| `horus/group`        | A custom group name. Use if you want the application to show in a different group than the namespace it is running in                                | `false`  |
+| `horus/url`          | A URL for the Hajimari app (This will override the ingress URL). It MUST begin with a scheme i.e., `http://` or `https://`                           | `false`  |
+| `horus/target-blank` | Determines if links should open in new tabs/windows                                                                                                  | `false`  |
+| `horus/description`  | A short description of the Hajimari app                                                                                                              | `false`  |
