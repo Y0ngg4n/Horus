@@ -1,5 +1,5 @@
 import schedule
-from flask import Flask, render_template
+from flask import Flask, render_template, jsonify
 from flask_assets import Bundle, Environment
 from uptime_kuma_api import UptimeKumaApi
 from dotenv import load_dotenv
@@ -28,8 +28,13 @@ uptime_kuma_status = {}
 global_bookmarks = {}
 api = None
 
+@app.route("/health")
+def homepage():
+    return jsonify({"status": "healthy"})
 
-@app.route("/")
+
+@app.route("/", defaults={'path': ''})
+@app.route('/<path:path>')
 def homepage():
     config = load_config()
     return render_template("index.html", title=config["title"], showGreeting=config["showGreeting"],
@@ -44,11 +49,6 @@ def homepage():
                            uptime_kuma_status=uptime_kuma_status, backgroundColor=config["backgroundColor"],
                            primaryColor=config["primaryColor"], accentColor=config["accentColor"],
                            onlineColor=config["onlineColor"], offlineColor=config["offlineColor"])
-
-@app.route("/health")
-def homepage():
-    return "OK"
-
 
 def uptime_kuma():
     global api
