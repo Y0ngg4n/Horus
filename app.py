@@ -62,7 +62,7 @@ def get_uptime_kuma_status():
 
 
 def load_config():
-    with open("config.yaml", "r") as stream:
+    with open("config/config.yaml", "r") as stream:
         app.logger.info("Loading config ...")
         try:
             return yaml.safe_load(stream)
