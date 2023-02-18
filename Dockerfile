@@ -17,5 +17,5 @@ USER app
 ENV PYTHONUNBUFFERED=1
 ENV PYTHONIOENCODING=UTF-8
 
-#CMD [ "python", "app.py"]
-CMD ["tail", "-f", "/dev/null"]
+CMD [ "python", "app.py"]
+#CMD ["tail", "-f", "/dev/null"]
