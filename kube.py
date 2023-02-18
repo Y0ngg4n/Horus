@@ -8,7 +8,7 @@ def get_ingress():
     # Configs can be set in Configuration class directly or using helper utility
     config.load_incluster_config()
     v1 = client.NetworkingV1Api()
-    ingress_list = []
+    ingress_list = set([])
     if app_config["ingress"]["all"]:
         ret = v1.list_ingress_for_all_namespaces(watch=False)
         for i in ret.items:
@@ -79,7 +79,7 @@ def parse_custom_apps(app_config, ingress_groups, ingress_list):
     if apps:
         print("Custom apps parsing")
         for group in apps:
-            custom_apps = []
+            custom_apps = set([])
             name = group['group']
             if name in ingress_groups.keys():
                 custom_apps = ingress_groups[name]

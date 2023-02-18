@@ -6,7 +6,7 @@ def parse_global_bookmarks(config):
         group_bookmarks = {}
         for group in bm:
             name = group['group']
-            bookmarks = []
+            bookmarks = set([])
             for bookmark in group["bookmarks"]:
                 bookmarks.append(GlobalBookmark(name=bookmark["name"], url=bookmark["url"], icon_url=bookmark["icon"],
                                                 target_blank=bookmark["targetBlank"], group=name))
