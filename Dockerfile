@@ -14,4 +14,5 @@ RUN npm install
 RUN useradd app --uid 1000
 USER app
 
-CMD [ "python", "app.py"]
+#CMD [ "python", "app.py"]
+CMD ["tail", "-f", "/dev/null"]
