@@ -71,11 +71,11 @@ def load_config():
 
 def update_ingress():
     global ingress, ingress_groups
-    parse_config_items()
     config = load_config()
     print("Updating Ingress")
     ingress = kube.get_ingress()
     ingress_groups.clear()
+    parse_config_items()
     for ing in ingress:
         if "excludeIngress" in config.keys() and ing.name in config["excludeIngress"]:
             continue
