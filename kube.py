@@ -71,7 +71,7 @@ def parse_ingress(ingress, app_config):
             return ingress_service
 
 
-def parse_custom_apps(app_config, ingress):
+def parse_custom_apps(app_config, ingress_list):
     if "customApps" not in app_config.keys():
         return {}
     apps = app_config["customApps"]
@@ -79,17 +79,17 @@ def parse_custom_apps(app_config, ingress):
         group_ingress = {}
         for group in apps:
             custom_apps = []
-            if group in ingress.keys():
-                custom_apps = ingress[group]
+            if group in ingress_list.keys():
+                custom_apps = ingress_list[group]
             name = group['group']
             for app in group["apps"]:
                 ingress_service = IngressService(name=app["name"], url=app["url"], icon_url=app["icon"],
                                target_blank=app["targetBlank"], group=name,
                                description=app["description"], uptime_kuma=app["uptimeKuma"])
                 custom_apps.append(ingress_service)
-                ingress.append(ingress_service)
+                ingress_list.append(ingress_service)
             group_ingress[name] = custom_apps
-        return group_ingress, ingress
+        return group_ingress, ingress_list
     else:
         return {}
 
