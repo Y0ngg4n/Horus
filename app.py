@@ -84,7 +84,7 @@ def update_ingress():
         if ing.group in ingress_groups.keys():
             item_list = set(ingress_groups[ing.group])
             item_list.add(ing)
-            ingress_groups[ing.group] = item_list
+            ingress_groups[ing.group] = sorted(item_list)
         else:
             ingress_groups[ing.group] = [ing, ]
     ingress_groups = sorted(ingress_groups)
