@@ -82,9 +82,22 @@ def parse_custom_apps(app_config, ingress_groups, ingress_list):
             if name in ingress_groups.keys():
                 custom_apps = ingress_groups[name]
             for app in group["apps"]:
-                ingress_service = IngressService(name=app["name"], url=app["url"], icon_url=app["icon"],
-                               target_blank=app["targetBlank"], group=name,
-                               description=app["description"], uptime_kuma=app["uptimeKuma"])
+                url = app["url"]
+                icon = url.rstrip("/") + "/favicon.ico"
+                if "icon" in app:
+                    icon = app["icon"]
+                target_blank = False
+                if "targetBlank" in app:
+                    target_blank = app["targetBlank"]
+                description = ""
+                if "description" in app:
+                    description = app["description"]
+                uptime_kuma = -1
+                if "uptimeKuma" in app:
+                    uptime_kuma = int(app["uptimeKuma"])
+                ingress_service = IngressService(name=app["name"], url=url, icon_url=icon,
+                                                 target_blank=target_blank, group=name,
+                                                 description=description, uptime_kuma=uptime_kuma)
                 custom_apps.add(ingress_service)
                 ingress_list.add(ingress_service)
             ingress_groups[name] = custom_apps
