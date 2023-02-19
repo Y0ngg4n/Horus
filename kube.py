@@ -110,9 +110,12 @@ def parse_custom_apps(app_config, ingress_groups, ingress_list):
 
 def get_favicon(url):
     icons = favicon.get(url)
-    if icons[0]:
-        return icons[0].url
-    else:
+    try:
+        if icons[0]:
+            return icons[0].url
+        else:
+            return url.rstrip("/") + "/favicon.ico"
+    except:
         return url.rstrip("/") + "/favicon.ico"
 
 class IngressService:
