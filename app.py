@@ -69,7 +69,7 @@ def login():
 
 
 def get_uptime_kuma_status():
-    return api.get_heartbeat()
+    return api.get_important_heartbeats()
 
 
 def load_config():
@@ -114,19 +114,16 @@ def update_uptime_kuma():
                 continue
             latest_timestamp = datetime.min
             latest_heartbeat = None
-            monitorIdCount = 0
             for status in status_list:
-                if int(status["id"]) == ing.uptime_kuma:
-                    monitorIdCount += 1
-                    timestamp = status["time"]
-                    timestamp = datetime.strptime(timestamp, "%Y-%m-%d %H:%M:%S.%f")
-                    if timestamp > latest_timestamp:
-                        latest_timestamp = timestamp
-                        latest_heartbeat = status
-                    if latest_heartbeat:
-                        print(ing.name + " " + str(latest_heartbeat["status"]))
-                        uptime_kuma_status[ing] = latest_heartbeat["status"]
-            print("Monitor Count for " + ing.name + " " + str(monitorIdCount))
+                for data in status["data"]:
+                    if int(data["monitorID"]) == ing.uptime_kuma:
+                        timestamp = data["time"]
+                        timestamp = datetime.strptime(timestamp, "%Y-%m-%d %H:%M:%S.%f")
+                        if timestamp > latest_timestamp:
+                            latest_timestamp = timestamp
+                            latest_heartbeat = data
+            if latest_heartbeat:
+                uptime_kuma_status[ing] = latest_heartbeat["status"]
         print("Uptime Kuma: Updated")
     except Exception as e:
         print("Uptime Kuma: Could not update!")
