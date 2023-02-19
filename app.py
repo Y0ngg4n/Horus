@@ -101,6 +101,7 @@ def update_uptime_kuma():
             latest_timestamp = datetime.min
             latest_heartbeat = None
             for heartbeat in monitor_beats:
+                print(heartbeat)
                 timestamp = heartbeat["time"]
                 timestamp = datetime.strptime(timestamp, "%Y-%m-%d %H:%M:%S.%f")
                 if timestamp > latest_timestamp:
