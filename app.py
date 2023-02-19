@@ -66,6 +66,9 @@ def login():
               os.getenv("UPTIME_KUMA_PASSWORD") or config['uptime-kuma']['password'])
 
 
+def get_uptime_kuma_status():
+    return api.get_important_heartbeats()
+
 
 def load_config():
     with open("config/config.yaml", "r") as stream:
@@ -96,28 +99,30 @@ def update_ingress():
     ingress_groups = ingress_groups
     print("Ingress: Updated")
 
+
 def update_uptime_kuma():
-    global ingress, uptime_kuma_status, api
+    global ingress, uptime_kuma_status
     uptime_kuma_status.clear()
     print("Uptime Kuma: Update ...")
-    login()
     try:
+        status_list = get_uptime_kuma_status()
         for ing in ingress:
             if ing.uptime_kuma == -1:
                 continue
-            monitor_beats = api.get_monitor_beats(ing.uptime_kuma, 1)
-
-            latest_timestamp = datetime.min
-            latest_heartbeat = None
-            for heartbeat in monitor_beats:
-                timestamp = heartbeat["time"]
-                timestamp = datetime.strptime(timestamp, "%Y-%m-%d %H:%M:%S.%f")
-                if timestamp > latest_timestamp:
-                    latest_timestamp = timestamp
-                    latest_heartbeat = heartbeat
-            if latest_heartbeat:
-                print(ing.name + " " + str(latest_heartbeat["status"]))
-                uptime_kuma_status[ing] = latest_heartbeat["status"]
+            for status in status_list:
+                if int(status["id"]) == ing.uptime_kuma:
+                    latest_timestamp = datetime.min
+                    latest_heartbeat = None
+                    for heartbeat in status["data"]:
+                        timestamp = heartbeat["time"]
+                        timestamp = datetime.strptime(timestamp, "%Y-%m-%d %H:%M:%S.%f")
+                        if timestamp > latest_timestamp:
+                            latest_timestamp = timestamp
+                            latest_heartbeat = heartbeat
+                    if latest_heartbeat:
+                        print(ing.name + " " + str(latest_heartbeat["status"]))
+                        uptime_kuma_status[ing] = latest_heartbeat["status"]
+                        break
         print("Uptime Kuma: Updated")
     except Exception as e:
         print("Uptime Kuma: Could not update!")
