@@ -123,7 +123,7 @@ def update_uptime_kuma():
                             latest_timestamp = timestamp
                             latest_heartbeat = data
             if latest_heartbeat:
-                print(ing.name + " " + str(latest_heartbeat["status"]))
+                # print(ing.name + " " + str(latest_heartbeat["status"]))
                 uptime_kuma_status[ing] = latest_heartbeat["status"]
         print("Uptime Kuma: Updated")
     except Exception as e:
@@ -142,13 +142,20 @@ def parse_config_items():
     global ingress, ingress_groups, global_bookmarks
     global_bookmarks = gb.parse_global_bookmarks(load_config())
     ingress_groups, ingress = kube.parse_custom_apps(load_config(), ingress_groups, ingress)
-
+    config = load_config()
+    uptime_kuma_poll_seconds = 30
+    ingress_poll_seconds = 60
+    if "uptimeKumaPollSeconds" in config:
+        uptime_kuma_poll_seconds = int(config["uptimeKumaPollSeconds"])
+    if "ingressPollSeconds" in config:
+        ingress_poll_seconds = int(config["ingressPollSeconds"])
+    return uptime_kuma_poll_seconds, ingress_poll_seconds
 
 if __name__ == "__main__":
-    parse_config_items()
+    ukps, ips = parse_config_items()
     uptime_kuma()
-    schedule.every(60).seconds.do(update_ingress)
-    schedule.every(30).seconds.do(update_uptime_kuma)
+    schedule.every(ukps).seconds.do(update_ingress)
+    schedule.every(ips).seconds.do(update_uptime_kuma)
     schedule.run_all()
     schedule_thread = threading.Thread(target=run_scheduler)
     schedule_thread.start()
