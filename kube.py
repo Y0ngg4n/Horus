@@ -109,8 +109,8 @@ def parse_custom_apps(app_config, ingress_groups, ingress_list):
 
 
 def get_favicon(url):
-    icons = favicon.get(url)
     try:
+        icons = favicon.get(url)
         if icons[0]:
             return icons[0].url
         else:
