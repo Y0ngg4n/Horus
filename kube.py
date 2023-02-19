@@ -63,7 +63,7 @@ def parse_ingress(ingress, app_config):
             if uptime_kuma:
                 ingress_service.uptime_kuma = int(uptime_kuma)
             if icon_url:
-                ingress_service.iconUrl = int(icon_url)
+                ingress_service.iconUrl = icon_url
             if group:
                 ingress_service.group = group
             if target_blank:
