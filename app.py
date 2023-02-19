@@ -134,7 +134,7 @@ if __name__ == "__main__":
     parse_config_items()
     uptime_kuma()
     schedule.every(60).seconds.do(update_ingress)
-    schedule.every(60).seconds.do(update_uptime_kuma)
+    schedule.every(30).seconds.do(update_uptime_kuma)
     schedule.run_all()
     schedule_thread = threading.Thread(target=run_scheduler)
     schedule_thread.start()
