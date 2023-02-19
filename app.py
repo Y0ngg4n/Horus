@@ -123,6 +123,7 @@ def update_uptime_kuma():
                             latest_timestamp = timestamp
                             latest_heartbeat = data
             if latest_heartbeat:
+                print(ing.name + " " + str(latest_heartbeat["status"]))
                 uptime_kuma_status[ing] = latest_heartbeat["status"]
         print("Uptime Kuma: Updated")
     except Exception as e:
