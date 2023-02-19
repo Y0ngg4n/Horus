@@ -46,14 +46,16 @@ def homepage():
 
 def uptime_kuma():
     global api
-    print("Getting uptime kuma")
-    config = load_config()
-    print(config['uptime-kuma']['url'])
-    api = UptimeKumaApi(os.getenv("UPTIME_KUMA_URL") or config['uptime-kuma']['url'])
-    api.login(os.getenv("UPTIME_KUMA_USERNAME") or config['uptime-kuma']['username'],
-              os.getenv("UPTIME_KUMA_PASSWORD") or config['uptime-kuma']['password'])
-    print(api.info())
-
+    try:
+        print("Getting uptime kuma")
+        config = load_config()
+        print(config['uptime-kuma']['url'])
+        api = UptimeKumaApi(os.getenv("UPTIME_KUMA_URL") or config['uptime-kuma']['url'])
+        api.login(os.getenv("UPTIME_KUMA_USERNAME") or config['uptime-kuma']['username'],
+                  os.getenv("UPTIME_KUMA_PASSWORD") or config['uptime-kuma']['password'])
+        print(api.info())
+    except:
+        print("Could not get Uptime Kuma")
 
 def get_uptime_kuma_status():
     return api.get_important_heartbeats()
@@ -72,7 +74,7 @@ def load_config():
 def update_ingress():
     global ingress, ingress_groups
     config = load_config()
-    print("Updating Ingress")
+    print("Ingress: Updating ...")
     ingress = kube.get_ingress()
     ingress_groups.clear()
     parse_config_items()
@@ -85,15 +87,17 @@ def update_ingress():
             ingress_groups[ing.group] = item_list
         else:
             ingress_groups[ing.group] = [ing, ]
-
+    print("Ingress: Updating ...")
 
 def update_uptime_kuma():
-    global ingress
-    print("Update Uptime Kuma")
+    global ingress, uptime_kuma_status
     uptime_kuma_status.clear()
-    status_list = get_uptime_kuma_status()
-    for ing in ingress:
-        if ing.uptime_kuma != -1:
+    print("Uptime Kuma: Update ...")
+    try:
+        status_list = get_uptime_kuma_status()
+        for ing in ingress:
+            if ing.uptime_kuma == -1:
+                continue
             for status in status_list:
                 if int(status["id"]) == ing.uptime_kuma:
                     latest_timestamp = datetime.min
@@ -106,7 +110,11 @@ def update_uptime_kuma():
                             latest_heartbeat = heartbeat
                     if latest_heartbeat:
                         uptime_kuma_status[ing] = latest_heartbeat["status"]
-                    break
+                        break
+        print("Uptime Kuma: Updated")
+    except:
+        print("Uptime Kuma: Could not update!")
+        uptime_kuma_status = {}
 
 
 def run_scheduler():
@@ -124,10 +132,9 @@ def parse_config_items():
 if __name__ == "__main__":
     parse_config_items()
     uptime_kuma()
-    update_ingress()
-    update_uptime_kuma()
     schedule.every(60).seconds.do(update_ingress)
     schedule.every(60).seconds.do(update_uptime_kuma)
+    schedule.run_all()
     schedule_thread = threading.Thread(target=run_scheduler)
     schedule_thread.start()
     serve(app, host="0.0.0.0", port=8080)
