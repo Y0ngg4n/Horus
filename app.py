@@ -120,7 +120,7 @@ def update_uptime_kuma():
                     timestamp = datetime.strptime(timestamp, "%Y-%m-%d %H:%M:%S.%f")
                     if timestamp > latest_timestamp:
                         latest_timestamp = timestamp
-                        latest_heartbeat = heartbeat
+                        latest_heartbeat = status
                     if latest_heartbeat:
                         print(ing.name + " " + str(latest_heartbeat["status"]))
                         uptime_kuma_status[ing] = latest_heartbeat["status"]
