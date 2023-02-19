@@ -60,7 +60,7 @@ def uptime_kuma():
         print("Could not get Uptime Kuma")
 
 def get_uptime_kuma_status():
-    return api.get_important_heartbeats()
+    return api.get_heartbeats()
 
 
 def load_config():
