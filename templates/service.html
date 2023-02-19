@@ -11,7 +11,7 @@
         {% endif %}
         <div class="h-full flex items-center border-2 p-4 rounded-lg" style="border-color: {{ border_color }}">
             <img alt="icon" class="w-16 h-16 bg-gray-100 object-cover object-center flex-shrink-0 rounded-full mr-4 text-transparent"
-                 src={{ ing.icon_url }}>
+                 src="{{ ing.icon_url }}" onerror="if (this.src != '/static/images/offline.png') this.src = '/static/images/offline.png';">
             <div class="flex-grow">
                 <p class="text-base title-font font-medium service-item-name break-all">{{ ing.name }}</p>
                 <p class="service-item-description break-all">{{ ing.description }}</p>
