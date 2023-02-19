@@ -112,6 +112,7 @@ def update_uptime_kuma():
                             latest_timestamp = timestamp
                             latest_heartbeat = heartbeat
                     if latest_heartbeat:
+                        print(ing.name + " " + str(latest_heartbeat["status"]))
                         uptime_kuma_status[ing] = latest_heartbeat["status"]
                         break
         print("Uptime Kuma: Updated")
