@@ -28,6 +28,7 @@ uptime_kuma_status = {}
 global_bookmarks = {}
 api = None
 
+
 @app.route("/")
 def homepage():
     config = load_config()
@@ -45,6 +46,7 @@ def homepage():
                            uptime_kuma_status=uptime_kuma_status, backgroundColor=config["backgroundColor"],
                            primaryColor=config["primaryColor"], accentColor=config["accentColor"],
                            onlineColor=config["onlineColor"], offlineColor=config["offlineColor"])
+
 
 def uptime_kuma():
     global api
@@ -124,7 +126,7 @@ def update_uptime_kuma():
                     if latest_heartbeat:
                         print(ing.name + " " + str(latest_heartbeat["status"]))
                         uptime_kuma_status[ing] = latest_heartbeat["status"]
-            print("Monitor Count for " + ing.name)
+            print("Monitor Count for " + ing.name + " " + str(monitorIdCount))
         print("Uptime Kuma: Updated")
     except Exception as e:
         print("Uptime Kuma: Could not update!")
