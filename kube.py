@@ -1,7 +1,7 @@
 from kubernetes import client, config
 
 import app
-
+import favicon
 
 def get_ingress():
     app_config = app.load_config()
@@ -32,14 +32,16 @@ def parse_ingress(ingress, app_config):
         first_path = first_rule.http.paths[0]
         if first_path:
             if ingress.spec.tls[0] and host in ingress.spec.tls[0].hosts:
-                ingress_service = IngressService(url="https://" + host + first_path.path, name="", description="",
+                url = "https://" + host + first_path.path
+                ingress_service = IngressService(url=url, name="", description="",
                                                  uptime_kuma=-1,
-                                                 icon_url="https://" + host + first_path.path + "favicon.ico", group="",
+                                                 icon_url=get_favicon(url), group="",
                                                  target_blank=False)
             else:
-                ingress_service = IngressService(url="http://" + host + first_path.path, name="", description="",
+                url = "http://" + host + first_path.path
+                ingress_service = IngressService(url=url, name="", description="",
                                                  uptime_kuma=-1,
-                                                 icon_url="http://" + host + first_path.path + "favicon.ico", group="",
+                                                 icon_url=get_favicon(url), group="",
                                                  target_blank=False)
             if not app_config['ingress']['allEnabled']:
                 enabled = ingress.metadata.annotations.get('horus/enabled')
@@ -83,7 +85,7 @@ def parse_custom_apps(app_config, ingress_groups, ingress_list):
                 custom_apps = ingress_groups[name]
             for app in group["apps"]:
                 url = app["url"]
-                icon = url.rstrip("/") + "/favicon.ico"
+                icon = get_favicon(url)
                 if "icon" in app:
                     icon = app["icon"]
                 target_blank = False
@@ -105,6 +107,13 @@ def parse_custom_apps(app_config, ingress_groups, ingress_list):
     else:
         return ingress_groups, set(ingress_list)
 
+
+def get_favicon(url):
+    icons = favicon.get(url)
+    if icons[0]:
+        return icons[0].url
+    else:
+        return url.rstrip("/") + "/favicon.ico"
 
 class IngressService:
     def __init__(self, name: str, description: str, group: str, url: str, icon_url: str, uptime_kuma: int,
