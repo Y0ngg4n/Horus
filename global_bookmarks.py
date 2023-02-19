@@ -1,9 +1,9 @@
 def parse_global_bookmarks(config):
     if "globalBookmarks" not in config.keys():
-        return {}
+        return sorted({})
     bm = config["globalBookmarks"]
     if bm:
-        group_bookmarks = {}
+        group_bookmarks = sorted({})
         for group in bm:
             name = group['group']
             bookmarks = set([])
@@ -13,7 +13,7 @@ def parse_global_bookmarks(config):
             group_bookmarks[name] = bookmarks
         return group_bookmarks
     else:
-        return {}
+        return sorted({})
 
 
 class GlobalBookmark:

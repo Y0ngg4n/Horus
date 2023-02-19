@@ -23,9 +23,9 @@ assets.register("css", css)
 css.build()
 
 ingress = set([])
-ingress_groups = {}
-uptime_kuma_status = {}
-global_bookmarks = {}
+ingress_groups = sorted({})
+uptime_kuma_status = sorted({})
+global_bookmarks = sorted({})
 api = None
 
 @app.route("/")
@@ -87,6 +87,7 @@ def update_ingress():
             ingress_groups[ing.group] = item_list
         else:
             ingress_groups[ing.group] = [ing, ]
+    ingress_groups = sorted(ingress_groups)
     print("Ingress: Updated")
 
 def update_uptime_kuma():
@@ -114,7 +115,7 @@ def update_uptime_kuma():
         print("Uptime Kuma: Updated")
     except:
         print("Uptime Kuma: Could not update!")
-        uptime_kuma_status = {}
+        uptime_kuma_status = sorted({})
 
 
 def run_scheduler():
