@@ -11,6 +11,7 @@ import time
 from datetime import datetime
 import global_bookmarks as gb
 from waitress import serve
+from collections import OrderedDict
 
 load_dotenv()
 
@@ -23,9 +24,9 @@ assets.register("css", css)
 css.build()
 
 ingress = set([])
-ingress_groups = sorted({})
-uptime_kuma_status = sorted({})
-global_bookmarks = sorted({})
+ingress_groups = OrderedDict()
+uptime_kuma_status = OrderedDict()
+global_bookmarks = OrderedDict()
 api = None
 
 @app.route("/")
@@ -82,12 +83,12 @@ def update_ingress():
         if "excludeIngress" in config.keys() and ing.name in config["excludeIngress"]:
             continue
         if ing.group in ingress_groups.keys():
-            item_list = set(ingress_groups[ing.group])
+            item_list = set(ingress_groups.get(ing.group))
             item_list.add(ing)
-            ingress_groups[ing.group] = sorted(item_list)
+            ingress_groups[ing.group] = OrderedDict(item_list)
         else:
             ingress_groups[ing.group] = [ing, ]
-    ingress_groups = sorted(ingress_groups)
+    ingress_groups = OrderedDict(ingress_groups)
     print("Ingress: Updated")
 
 def update_uptime_kuma():
@@ -115,7 +116,7 @@ def update_uptime_kuma():
         print("Uptime Kuma: Updated")
     except:
         print("Uptime Kuma: Could not update!")
-        uptime_kuma_status = sorted({})
+        uptime_kuma_status = OrderedDict()
 
 
 def run_scheduler():
