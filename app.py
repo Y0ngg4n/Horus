@@ -110,7 +110,6 @@ def update_uptime_kuma():
             if latest_heartbeat:
                 print(ing.name + " " + str(latest_heartbeat["status"]))
                 uptime_kuma_status[ing] = latest_heartbeat["status"]
-                break
         print("Uptime Kuma: Updated")
     except:
         print("Uptime Kuma: Could not update!")
