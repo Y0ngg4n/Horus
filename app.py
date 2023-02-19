@@ -109,20 +109,21 @@ def update_uptime_kuma():
         for ing in ingress:
             if ing.uptime_kuma == -1:
                 continue
+            latest_timestamp = datetime.min
+            latest_heartbeat = None
+            monitorIdCount = 0
             for status in status_list:
                 if int(status["id"]) == ing.uptime_kuma:
-                    latest_timestamp = datetime.min
-                    latest_heartbeat = None
-                    for heartbeat in status["data"]:
-                        timestamp = heartbeat["time"]
-                        timestamp = datetime.strptime(timestamp, "%Y-%m-%d %H:%M:%S.%f")
-                        if timestamp > latest_timestamp:
-                            latest_timestamp = timestamp
-                            latest_heartbeat = heartbeat
+                    monitorIdCount += 1
+                    timestamp = status["time"]
+                    timestamp = datetime.strptime(timestamp, "%Y-%m-%d %H:%M:%S.%f")
+                    if timestamp > latest_timestamp:
+                        latest_timestamp = timestamp
+                        latest_heartbeat = heartbeat
                     if latest_heartbeat:
                         print(ing.name + " " + str(latest_heartbeat["status"]))
                         uptime_kuma_status[ing] = latest_heartbeat["status"]
-                        break
+            print("Monitor Count for " + ing.name)
         print("Uptime Kuma: Updated")
     except Exception as e:
         print("Uptime Kuma: Could not update!")
