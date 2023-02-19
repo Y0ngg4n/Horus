@@ -87,7 +87,7 @@ def update_ingress():
             ingress_groups[ing.group] = item_list
         else:
             ingress_groups[ing.group] = [ing, ]
-    print("Ingress: Updating ...")
+    print("Ingress: Updated")
 
 def update_uptime_kuma():
     global ingress, uptime_kuma_status
