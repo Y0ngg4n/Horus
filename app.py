@@ -53,11 +53,18 @@ def uptime_kuma():
         config = load_config()
         print(config['uptime-kuma']['url'])
         api = UptimeKumaApi(os.getenv("UPTIME_KUMA_URL") or config['uptime-kuma']['url'])
-        api.login(os.getenv("UPTIME_KUMA_USERNAME") or config['uptime-kuma']['username'],
-                  os.getenv("UPTIME_KUMA_PASSWORD") or config['uptime-kuma']['password'])
+        login()
         print(api.info())
     except:
         print("Could not get Uptime Kuma")
+
+
+def login():
+    global api
+    config = load_config()
+    api.login(os.getenv("UPTIME_KUMA_USERNAME") or config['uptime-kuma']['username'],
+              os.getenv("UPTIME_KUMA_PASSWORD") or config['uptime-kuma']['password'])
+
 
 
 def load_config():
@@ -86,18 +93,20 @@ def update_ingress():
             ingress_groups[ing.group] = kube.getSortedIngressList(item_list)
         else:
             ingress_groups[ing.group] = [ing, ]
-    ingress_groups = (ingress_groups)
+    ingress_groups = ingress_groups
     print("Ingress: Updated")
 
 def update_uptime_kuma():
-    global ingress, uptime_kuma_status
+    global ingress, uptime_kuma_status, api
     uptime_kuma_status.clear()
     print("Uptime Kuma: Update ...")
+    login()
     try:
         for ing in ingress:
             if ing.uptime_kuma == -1:
                 continue
             monitor_beats = api.get_monitor_beats(ing.uptime_kuma, 1)
+
             latest_timestamp = datetime.min
             latest_heartbeat = None
             for heartbeat in monitor_beats:
