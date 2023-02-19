@@ -11,7 +11,6 @@ import time
 from datetime import datetime
 import global_bookmarks as gb
 from waitress import serve
-from collections import OrderedDict
 
 load_dotenv()
 
@@ -24,9 +23,9 @@ assets.register("css", css)
 css.build()
 
 ingress = set([])
-ingress_groups = OrderedDict()
-uptime_kuma_status = OrderedDict()
-global_bookmarks = OrderedDict()
+ingress_groups = {}
+uptime_kuma_status = {}
+global_bookmarks = {}
 api = None
 
 @app.route("/")
@@ -88,7 +87,7 @@ def update_ingress():
             ingress_groups[ing.group] = kube.getSortedIngressList(item_list)
         else:
             ingress_groups[ing.group] = [ing, ]
-    ingress_groups = OrderedDict(ingress_groups)
+    ingress_groups = (ingress_groups)
     print("Ingress: Updated")
 
 def update_uptime_kuma():
@@ -116,7 +115,7 @@ def update_uptime_kuma():
         print("Uptime Kuma: Updated")
     except:
         print("Uptime Kuma: Could not update!")
-        uptime_kuma_status = OrderedDict()
+        uptime_kuma_status = {}
 
 
 def run_scheduler():

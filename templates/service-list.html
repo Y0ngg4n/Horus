@@ -19,11 +19,11 @@
         {% endif %}
         <div class="">
             {% if showAppGroups %}
-                {% for group, items in ingress_groups.items() %}
+                {% for group in sorted(ingress_groups.keys()) %}
                     <div class="p-4 service-item-group">
                         <h2 class="p-4 text-2xl service-item-group-label">{{ group }}</h2>
                         <div class="grid lg:grid-cols-4 md:grid-cols-2 grid-cols-1">
-                            {% for ing in items %}
+                            {% for ing in ingress_groups[group] %}
                                 {% include "service.html" %}
                             {% endfor %}
                         </div>

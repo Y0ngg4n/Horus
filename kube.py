@@ -2,7 +2,6 @@ from kubernetes import client, config
 
 import app
 import favicon
-from collections import OrderedDict
 
 def get_ingress():
     app_config = app.load_config()
@@ -78,7 +77,7 @@ def parse_ingress(ingress, app_config):
 
 def parse_custom_apps(app_config, ingress_groups, ingress_list):
     if "customApps" not in app_config.keys():
-        return OrderedDict(ingress_groups), set(getSortedIngressList(ingress_list))
+        return ingress_groups, set(getSortedIngressList(ingress_list))
     apps = app_config["customApps"]
     if apps:
         for group in apps:
@@ -106,9 +105,9 @@ def parse_custom_apps(app_config, ingress_groups, ingress_list):
                 custom_apps.add(ingress_service)
                 ingress_list.add(ingress_service)
             ingress_groups[name] = getSortedIngressList(custom_apps)
-        return OrderedDict(ingress_groups), set(getSortedIngressList(ingress_list))
+        return ingress_groups, set(getSortedIngressList(ingress_list))
     else:
-        return OrderedDict(ingress_groups), set(getSortedIngressList(ingress_list))
+        return ingress_groups, set(getSortedIngressList(ingress_list))
 
 
 def getSortedIngressList(list):

@@ -1,10 +1,9 @@
-from collections import OrderedDict
 def parse_global_bookmarks(config):
     if "globalBookmarks" not in config.keys():
-        return OrderedDict()
+        return {}
     bm = config["globalBookmarks"]
     if bm:
-        group_bookmarks = OrderedDict()
+        group_bookmarks = {}
         for group in bm:
             name = group['group']
             bookmarks = set([])
@@ -14,7 +13,7 @@ def parse_global_bookmarks(config):
             group_bookmarks[name] = bookmarks
         return group_bookmarks
     else:
-        return OrderedDict()
+        return {}
 
 
 class GlobalBookmark:
