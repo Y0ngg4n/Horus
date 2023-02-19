@@ -31,6 +31,10 @@ def parse_ingress(ingress, app_config):
         host = first_rule.host
         first_path = first_rule.http.paths[0]
         if first_path:
+            if not app_config['ingress']['allEnabled']:
+                enabled = ingress.metadata.annotations.get('horus/enabled')
+                if not enabled:
+                    return None
             if ingress.spec.tls[0] and host in ingress.spec.tls[0].hosts:
                 url = "https://" + host + first_path.path
                 ingress_service = IngressService(url=url, name="", description="",
@@ -43,10 +47,6 @@ def parse_ingress(ingress, app_config):
                                                  uptime_kuma=-1,
                                                  icon_url=get_favicon(url), group="",
                                                  target_blank=False)
-            if not app_config['ingress']['allEnabled']:
-                enabled = ingress.metadata.annotations.get('horus/enabled')
-                if not enabled:
-                    return None
 
             ingress_service.group = ingress.metadata.namespace
 
