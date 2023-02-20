@@ -155,9 +155,8 @@ def uptime_kuma():
         config = load_config()
         url = ""
         if "uptime-kuma" in config and "url" in config:
-            url = config['uptime-kuma']['username']
+            url = config['uptime-kuma']['url']
         api = UptimeKumaApi(os.getenv("UPTIME_KUMA_URL") or url)
-        login()
         print(api.info())
     except:
         print("Could not get Uptime Kuma")
@@ -166,6 +165,8 @@ def uptime_kuma():
 def login():
     global api
     config = load_config()
+    if not api:
+        uptime_kuma()
     username = ""
     password = ""
     if "uptime-kuma" in config and "username" in config and "password" in config:
@@ -266,6 +267,7 @@ def parse_config_items():
 if __name__ == "__main__":
     ukps, ips = parse_config_items()
     uptime_kuma()
+    login()
     schedule.every(ukps).seconds.do(update_ingress)
     schedule.every(ips).seconds.do(update_uptime_kuma)
     schedule.run_all()
