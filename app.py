@@ -239,10 +239,7 @@ def update_uptime_kuma():
                 # print(ing.name + " " + str(latest_heartbeat["status"]))
                 tmp_uptime_kuma_status[ing] = latest_heartbeat["status"]
         for status in tmp_uptime_kuma_status:
-            if status not in ingress:
-                del uptime_kuma_status[status]
-            else:
-                uptime_kuma_status[status] = status
+            uptime_kuma_status[status] = status
         print("Uptime Kuma: Updated")
     except Exception as e:
         print("Uptime Kuma: Could not update!")
