@@ -238,8 +238,8 @@ def update_uptime_kuma():
             if latest_heartbeat:
                 # print(ing.name + " " + str(latest_heartbeat["status"]))
                 tmp_uptime_kuma_status[ing] = latest_heartbeat["status"]
-        for status in tmp_uptime_kuma_status:
-            uptime_kuma_status[status] = status
+        for ing in tmp_uptime_kuma_status.keys():
+            uptime_kuma_status[ing] = tmp_uptime_kuma_status[ing]
         print("Uptime Kuma: Updated")
     except Exception as e:
         print("Uptime Kuma: Could not update!")
