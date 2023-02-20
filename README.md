@@ -141,6 +141,7 @@ I wanted to choose a name that starts with an H to credit Hajimari´s work.
 ## Thank you / dependencies
 
 - [Hajimari](https://github.com/toboshii/hajimari) For the great inspiration and your Readme
+- [Uptime-Kuma-Api](https://github.com/lucasheld/uptime-kuma-api) For the API that makes this possible
 
 ## License
 
