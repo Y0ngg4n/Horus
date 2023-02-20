@@ -46,11 +46,9 @@ def subpages(subpage):
 
 def get_index(subpage=""):
     global ingress, ingress_groups, global_bookmarks
-    local_sorted_ingress_groups_keys = sorted(ingress_groups.keys())
     local_ingress = ingress
     local_ingress_groups = ingress_groups
     local_global_bookmarks = global_bookmarks
-    local_sorted_global_bookmarks_keys = sorted(global_bookmarks.keys())
     tmp_ingress = set([])
     for i in local_ingress:
         if not i.sub_pages or subpage in get_sub_pages(i.sub_pages):
@@ -236,7 +234,7 @@ def update_uptime_kuma():
                             latest_timestamp = timestamp
                             latest_heartbeat = data
             if latest_heartbeat:
-                # print(ing.name + " " + str(latest_heartbeat["status"]))
+                print(ing.name + " " + str(latest_heartbeat["status"]))
                 tmp_uptime_kuma_status[ing] = latest_heartbeat["status"]
         for ing in tmp_uptime_kuma_status.keys():
             uptime_kuma_status[ing] = tmp_uptime_kuma_status[ing]
