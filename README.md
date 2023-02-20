@@ -13,6 +13,21 @@ self-hosted Kubernetes cluster. Thanks to Hajimari for the great inspiration!
 - Automatic light/dark mode
 - Add subpages so you show applications only on specific paths
 
+
+## Installation
+
+Currently, I did not have the time to provide a helm chart. But i have put a default deployment vie Kustomize in the [deployment/kustomization](deployment/kustomization) folder.
+You can also just apply all files one by on via
+`kubectl apply -f FILENAME`.
+Just make sure you keep the same order as in the [deployment/kustomization/kustomization.yaml](deployment/kustomization/kustomization.yaml) file.
+
+To update the container to the latest image, just delete the pod, and it will pull the latest.
+Currently, I did not have the time to provide proper versioning.
+
+### Docker
+You can also just use the [Docker](https://hub.docker.com/r/yonggan/horus) image. This will work fine, but you have to provide all apps via customApps.
+Also just ignore the ingress errors.
+
 ## Usage
 
 ### Ingresses

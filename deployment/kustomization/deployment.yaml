@@ -1,0 +1,30 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: horus
+  namespace: websites
+spec:
+  selector:
+    matchLabels:
+      app: horus
+  template:
+    metadata:
+      labels:
+        app: horus
+    spec:
+      serviceAccountName: horus
+      containers:
+        - image: yonggan/horus:latest
+          imagePullPolicy: Always
+          name: horus
+          ports:
+            - containerPort: 8080
+              protocol: TCP
+          volumeMounts:
+            - mountPath: /app/config
+              name: horus-config
+      restartPolicy: Always
+      volumes:
+        - name: horus-config
+          configMap:
+            name: horus-config
