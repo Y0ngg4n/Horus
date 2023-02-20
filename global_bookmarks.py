@@ -28,6 +28,8 @@ def parse_global_bookmarks(config):
     else:
         return {}
 
+def getSortedBookmarksList(list):
+    return sorted(list, key=lambda item: item.name)
 
 class GlobalBookmark:
     def __init__(self, name: str, group: str, url: str, icon_url: str, target_blank: bool, sub_pages: str):

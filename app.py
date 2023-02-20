@@ -55,7 +55,7 @@ def get_index(subpage=""):
     for i in local_ingress:
         if not i.sub_pages or subpage in get_sub_pages(i.sub_pages):
             tmp_ingress.add(i)
-    local_ingress = tmp_ingress
+    local_ingress = kube.getSortedIngressList(tmp_ingress)
     tmp_ingress_group = {}
     for group in local_ingress_groups:
         tmp_ingress = set([])
@@ -63,7 +63,7 @@ def get_index(subpage=""):
             if not i.sub_pages or subpage in get_sub_pages(i.sub_pages):
                 tmp_ingress.add(i)
         if len(tmp_ingress) > 0:
-            tmp_ingress_group[group] = tmp_ingress
+            tmp_ingress_group[group] = kube.getSortedIngressList(tmp_ingress)
     local_ingress_groups = tmp_ingress_group
     local_sorted_ingress_groups_keys = sorted(local_ingress_groups.keys())
     tmp_book_marks_group = {}
@@ -73,7 +73,7 @@ def get_index(subpage=""):
             if not bookmark.sub_pages or subpage in get_sub_pages(bookmark.sub_pages):
                 tmp_book_marks.add(bookmark)
         if len(tmp_book_marks) > 0:
-            tmp_book_marks_group[group] = tmp_book_marks
+            tmp_book_marks_group[group] = gb.getSortedBookmarksList(tmp_book_marks)
     local_global_bookmarks = tmp_book_marks_group
     local_sorted_global_bookmarks_keys = sorted(local_global_bookmarks.keys())
 
