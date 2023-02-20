@@ -41,7 +41,7 @@ def parse_ingress(ingress, app_config):
                                                  icon_url=get_favicon(url), group="",
                                                  target_blank=False, sub_pages="")
             else:
-                url = "http://" + host + first_path.path
+                url = "http://" + host + first_path.path.rstrip("/")
                 ingress_service = IngressService(url=url, name="", description="",
                                                  uptime_kuma=-1,
                                                  icon_url=get_favicon(url), group="",
@@ -54,7 +54,7 @@ def parse_ingress(ingress, app_config):
             description = ingress.metadata.annotations.get('horus/description')
             uptime_kuma = ingress.metadata.annotations.get('horus/uptime-kuma')
             icon_url = ingress.metadata.annotations.get('horus/icon-url')
-            url = ingress.metadata.annotations.get('horus/url').rstrip("/")
+            url = ingress.metadata.annotations.get('horus/url')
             target_blank = ingress.metadata.annotations.get('horus/target-blank')
             sub_pages = ingress.metadata.annotations.get('horus/sub-pages')
             if name:
@@ -68,7 +68,7 @@ def parse_ingress(ingress, app_config):
             if icon_url:
                 ingress_service.iconUrl = icon_url
             if url:
-                ingress_service.url = url
+                ingress_service.url = url.rstrip("/")
             if group:
                 ingress_service.group = group
             if target_blank:
