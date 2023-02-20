@@ -11,7 +11,7 @@ self-hosted Kubernetes cluster. Thanks to Hajimari for the great inspiration!
 - Customizable list of bookmarks
 - Selectable themes and custom theme support
 - Automatic light/dark mode
-- Multiple instance support
+- Add subpages so you show applications only on specific paths
 
 ## Usage
 
@@ -38,27 +38,30 @@ Horus looks for specific annotations on ingresses.
 Hajimari supports the following configuration options that can be modified by either ConfigMap or `values.yaml` if you
 are using Helm
 
-|        Field        |                          Description                          |       Default        | Type                                          |
-|:-------------------:|:-------------------------------------------------------------:|:--------------------:|-----------------------------------------------|
-|      greeting       |                     Your Greeting String                      | "Welcome, Searcher!" | string                                        |
-|        title        |           Browser title for this Hajimari instance            |       "Horus"        | string                                        |
-|   backgroundColor   |                Hex Color to use as background                 |      "#232530"       | string                                        |
-|    primaryColor     |               Hex Color to use as primary color               |      "#232530"       | string                                        |
-|     accentColor     |               Hex Color to use as accent color                |      "#232530"       | string                                        |
-|     onlineColor     |           Hex Color to use as offline status color            |      "#232530"       | string                                        |
-|    offlineColor     |            Hex Color to use as online status color            |      "#232530"       | string                                        |
-|    showGreeting     |                  Toggle showing the greeting                  |         true         | bool                                          |
-|     showSearch      |                   Toggle showing the search                   |         true         | bool                                          |
-|    showAppGroups    |          Toggle grouping apps by group (namespaces)           |         true         | bool                                          |
-|     showAppUrls     |                  Toggle displaying app URLs                   |         true         | bool                                          |
-| showAppDescription  |                Toggle showing app description                 |        false         | bool                                          |
-|    showAppStatus    |             Toggle showing app Uptime Kuma status             |         true         | bool                                          |
-| showGlobalBookmarks |     Toggle showing global bookmarks on custom startpages      |        false         | bool                                          |
-|  alwaysTargetBlank  | Set to true to open apps/bookmarks in a new window by default |        false         | bool                                          |
-|     customApps      |      A list of custom apps to add to the discovered apps      |          []          | \[\][AppGroup](#appgroup)                     |
-|   globalBookmarks   |               A list of bookmark groups to add                |          []          | \[\][BookmarkGroup](#bookmarkgroup)           |
-|       ingress       |                Settings for Ingress selection                 |          []          | \[\][IngressSettings](#ingresssettings)       |
-|     uptime-kuma     |                   Settings for Uptime Kuma                    |          []          | \[\][UptimeKumaSettings](#uptimekumasettings) |
+|         Field         |                          Description                          |       Default        | Type                                          |
+|:---------------------:|:-------------------------------------------------------------:|:--------------------:|-----------------------------------------------|
+|       greeting        |                     Your Greeting String                      | "Welcome, Searcher!" | string                                        |
+|         title         |           Browser title for this Hajimari instance            |       "Horus"        | string                                        |
+|    backgroundColor    |                Hex Color to use as background                 |      "#232530"       | string                                        |
+|     primaryColor      |               Hex Color to use as primary color               |      "#232530"       | string                                        |
+|      accentColor      |               Hex Color to use as accent color                |      "#232530"       | string                                        |
+|      onlineColor      |           Hex Color to use as offline status color            |      "#232530"       | string                                        |
+|     offlineColor      |            Hex Color to use as online status color            |      "#232530"       | string                                        |
+|     showGreeting      |                  Toggle showing the greeting                  |         true         | bool                                          |
+|      showSearch       |                   Toggle showing the search                   |         true         | bool                                          |
+|     showAppGroups     |          Toggle grouping apps by group (namespaces)           |         true         | bool                                          |
+|      showAppUrls      |                  Toggle displaying app URLs                   |         true         | bool                                          |
+|  showAppDescription   |                Toggle showing app description                 |        false         | bool                                          |
+|     showAppStatus     |             Toggle showing app Uptime Kuma status             |         true         | bool                                          |
+|  showGlobalBookmarks  |     Toggle showing global bookmarks on custom startpages      |        false         | bool                                          |
+|   alwaysTargetBlank   | Set to true to open apps/bookmarks in a new window by default |        false         | bool                                          |
+| uptimeKumaPollSeconds |             Seconds schedule to poll Uptime Kuma              |          30          | int                                           |
+|  ingressPollSeconds   |               Seconds schedule to poll Ingress                |          60          | int                                           |
+|    excludeIngress     |              A list on ingress names to exclude               |          []          | string[]                                      |
+|      customApps       |      A list of custom apps to add to the discovered apps      |          []          | \[\][AppGroup](#appgroup)                     |
+|    globalBookmarks    |               A list of bookmark groups to add                |          []          | \[\][BookmarkGroup](#bookmarkgroup)           |
+|        ingress        |                Settings for Ingress selection                 |          []          | \[\][IngressSettings](#ingresssettings)       |
+|      uptime-kuma      |                   Settings for Uptime Kuma                    |          []          | \[\][UptimeKumaSettings](#uptimekumasettings) |
 
 #### IngressSettings
 
@@ -94,14 +97,14 @@ custom apps feature. You can pass a list of custom apps inside the config.
 
 Custom apps can be added by configuring a list of apps under an app group.
 
-| Field       | Description                                                                                                                                                                                                                          | Type   |
-|-------------|--------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|--------|
-| name        | Name of the custom app (Required)                                                                                                                                                                                                    | String |
-| icon        | Icon name or URL for the custom app                                                                                                                                                                                                  | String |
-| url         | URL of the custom app                                                                                                                                                                                                                | String |
-| description | Short description of the custom app                                                                                                                                                                                                  | String |
-| targetBlank | Open app in a new window/tab                                                                                                                                                                                                         | Bool   |
-| uptimeKuma  | The Uptime Kuma ID                                                                                                                                                                                                                   | String |
+| Field       | Description                                                                                                                                                                                                                           | Type   |
+|-------------|---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|--------|
+| name        | Name of the custom app (Required)                                                                                                                                                                                                     | String |
+| icon        | Icon name or URL for the custom app                                                                                                                                                                                                   | String |
+| url         | URL of the custom app                                                                                                                                                                                                                 | String |
+| description | Short description of the custom app                                                                                                                                                                                                   | String |
+| targetBlank | Open app in a new window/tab                                                                                                                                                                                                          | Bool   |
+| uptimeKuma  | The Uptime Kuma ID                                                                                                                                                                                                                    | String |
 | subPages    | A comma-seperated list of subPages. This is helpful to show applications only on subPages. E.g. if you set sub-pages to "foo,bar", this app will only gets displayed if you go on https://example.com/foo and https://example.com/bar | String |
 
 #### BookmarkGroup
@@ -130,6 +133,7 @@ Bookmarks can be added by configuring a list of bookmarks under a group.
 Pull requests are welcome. For major changes, please open an issue first to discuss what you would like to change.
 
 ## About
+
 ### Why Horus?
 
 I wanted to choose a name that starts with an H to credit Hajimari´s work.

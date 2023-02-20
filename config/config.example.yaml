@@ -10,11 +10,12 @@ showGreeting: true
 showApps: true
 showAppGroups: true
 showAppUrls: true
-showAppInfo: true
+showAppDescription: true
 showAppStatus: true
 showGlobalBookmarks: true
-showBookmarkGroups: true
 alwaysTargetBlank: true
+uptimeKumaPollSeconds: 30
+ingressPollSeconds: 60
 excludeIngress:
   - horus
 ingress:
@@ -34,3 +35,11 @@ globalBookmarks:
         icon: 'https://duckduckgo.com/about'
         url: 'https://duck.com'
         targetBlank: true
+customApps:
+  - group: Important
+    apps:
+      - name: DuckDuckGo
+        icon: 'https://duckduckgo.com/about'
+        url: 'https://duckduckgo.com'
+        targetBlank: true
+        uptimeKuma: '55'
