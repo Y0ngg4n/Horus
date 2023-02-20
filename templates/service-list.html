@@ -18,6 +18,9 @@
             </div>
         {% endif %}
         <div class="">
+            {% if sorted_ingress_groups_keys | length > 0 %}
+                <h2 class="text-4xl font-bold p-4">Applications</h2>
+            {% endif %}
             {% if showAppGroups %}
                 {% for group in sorted_ingress_groups_keys %}
                     <div class="p-4 service-item-group">
