@@ -243,7 +243,6 @@ def update_uptime_kuma():
     except Exception as e:
         print("Uptime Kuma: Could not update!")
         print(e)
-        uptime_kuma_status = uptime_kuma_status
 
 
 def run_scheduler():
@@ -255,7 +254,7 @@ def run_scheduler():
 def parse_config_items():
     global ingress, ingress_groups, global_bookmarks
     global_bookmarks = gb.parse_global_bookmarks(load_config())
-    ingress_groups, ingress = kube.parse_custom_apps(load_config(), ingress_groups, ingress)
+    ingress_groups, ingress = kube.parse_custom_apps(load_config(), ingress_groups, set(ingress))
     config = load_config()
     uptime_kuma_poll_seconds = 30
     ingress_poll_seconds = 60

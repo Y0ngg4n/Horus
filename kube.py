@@ -87,7 +87,7 @@ def parse_custom_apps(app_config, ingress_groups, ingress_list):
             custom_apps = set([])
             name = group['group']
             if name in ingress_groups.keys():
-                custom_apps = ingress_groups[name]
+                custom_apps = set(ingress_groups[name])
             for app in group["apps"]:
                 url = app["url"]
                 icon = get_favicon(url)
