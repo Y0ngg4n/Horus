@@ -3,6 +3,8 @@
 Horus is a [Hajimari](https://github.com/toboshii/hajimari) similar startpage designed to be the entrypoint for your
 self-hosted Kubernetes cluster. Thanks to Hajimari for the great inspiration!
 
+![Screenshot1](docs/screenshot1.png)
+
 ## Features
 
 - Dynamically list apps discovered from Kubernetes ingresses
