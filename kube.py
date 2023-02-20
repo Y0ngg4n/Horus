@@ -7,24 +7,21 @@ def get_ingress():
     app_config = app.load_config()
     # Configs can be set in Configuration class directly or using helper utility
     ingress_list = set([])
-    try:
-        config.load_incluster_config()
-        v1 = client.NetworkingV1Api()
-        if app_config["ingress"]["all"]:
-            ret = v1.list_ingress_for_all_namespaces(watch=False)
+    config.load_incluster_config()
+    v1 = client.NetworkingV1Api()
+    if app_config["ingress"]["all"]:
+        ret = v1.list_ingress_for_all_namespaces(watch=False)
+        for i in ret.items:
+            parsed_ingress = parse_ingress(i, app_config)
+            if parsed_ingress:
+                ingress_list.add(parsed_ingress)
+    else:
+        for ns in app_config['ingress']['namespaces']:
+            ret = v1.list_namespaced_ingress(namespace=ns, watch=False)
             for i in ret.items:
                 parsed_ingress = parse_ingress(i, app_config)
                 if parsed_ingress:
                     ingress_list.add(parsed_ingress)
-        else:
-            for ns in app_config['ingress']['namespaces']:
-                ret = v1.list_namespaced_ingress(namespace=ns, watch=False)
-                for i in ret.items:
-                    parsed_ingress = parse_ingress(i, app_config)
-                    if parsed_ingress:
-                        ingress_list.add(parsed_ingress)
-    except:
-        print("Ingress: Could not update!")
     return set(ingress_list)
 
 def parse_ingress(ingress, app_config):

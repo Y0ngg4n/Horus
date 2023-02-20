@@ -193,19 +193,23 @@ def update_ingress():
     global ingress, ingress_groups
     config = load_config()
     print("Ingress: Updating ...")
-    ingress = kube.get_ingress()
-    ingress_groups.clear()
-    parse_config_items()
-    for ing in ingress:
-        if "excludeIngress" in config.keys() and ing.name in config["excludeIngress"]:
-            continue
-        if ing.group in ingress_groups.keys():
-            item_list = set(ingress_groups.get(ing.group))
-            item_list.add(ing)
-            ingress_groups[ing.group] = kube.getSortedIngressList(item_list)
-        else:
-            ingress_groups[ing.group] = [ing, ]
-    ingress_groups = ingress_groups
+    try:
+        ingress = kube.get_ingress()
+        ingress_groups.clear()
+        parse_config_items()
+        for ing in ingress:
+            if "excludeIngress" in config.keys() and ing.name in config["excludeIngress"]:
+                continue
+            if ing.group in ingress_groups.keys():
+                item_list = set(ingress_groups.get(ing.group))
+                item_list.add(ing)
+                ingress_groups[ing.group] = kube.getSortedIngressList(item_list)
+            else:
+                ingress_groups[ing.group] = [ing, ]
+        ingress_groups = ingress_groups
+    except Exception as e:
+        print("Ingress: Could not update!")
+        print(e)
     print("Ingress: Updated")
 
 
