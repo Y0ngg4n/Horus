@@ -35,7 +35,7 @@ def parse_ingress(ingress, app_config):
                 if not enabled:
                     return None
             if ingress.spec.tls[0] and host in ingress.spec.tls[0].hosts:
-                url = "https://" + host + first_path.path
+                url = "https://" + host + first_path.path.rstrip("/")
                 ingress_service = IngressService(url=url, name="", description="",
                                                  uptime_kuma=-1,
                                                  icon_url=get_favicon(url), group="",
@@ -54,7 +54,7 @@ def parse_ingress(ingress, app_config):
             description = ingress.metadata.annotations.get('horus/description')
             uptime_kuma = ingress.metadata.annotations.get('horus/uptime-kuma')
             icon_url = ingress.metadata.annotations.get('horus/icon-url')
-            url = ingress.metadata.annotations.get('horus/url')
+            url = ingress.metadata.annotations.get('horus/url').rstrip("/")
             target_blank = ingress.metadata.annotations.get('horus/target-blank')
             sub_pages = ingress.metadata.annotations.get('horus/sub-pages')
             if name:
