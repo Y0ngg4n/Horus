@@ -57,6 +57,7 @@ def parse_ingress(ingress, app_config):
             description = ingress.metadata.annotations.get('horus/description')
             uptime_kuma = ingress.metadata.annotations.get('horus/uptime-kuma')
             icon_url = ingress.metadata.annotations.get('horus/icon-url')
+            url = ingress.metadata.annotations.get('horus/url')
             target_blank = ingress.metadata.annotations.get('horus/target-blank')
             sub_pages = ingress.metadata.annotations.get('horus/sub-pages')
             if name:
@@ -69,6 +70,8 @@ def parse_ingress(ingress, app_config):
                 ingress_service.uptime_kuma = int(uptime_kuma)
             if icon_url:
                 ingress_service.iconUrl = icon_url
+            if url:
+                ingress_service.url = url
             if group:
                 ingress_service.group = group
             if target_blank:

@@ -44,55 +44,101 @@ def subpages(subpage):
     return get_index(subpage)
 
 
-def get_index(subpage=None):
+def get_index(subpage=""):
     global ingress, ingress_groups, global_bookmarks
     local_sorted_ingress_groups_keys = sorted(ingress_groups.keys())
     local_ingress = ingress
     local_ingress_groups = ingress_groups
     local_global_bookmarks = global_bookmarks
     local_sorted_global_bookmarks_keys = sorted(global_bookmarks.keys())
-    if subpage:
+    tmp_ingress = set([])
+    for i in local_ingress:
+        if not i.sub_pages or subpage in get_sub_pages(i.sub_pages):
+            tmp_ingress.add(i)
+    local_ingress = tmp_ingress
+    tmp_ingress_group = {}
+    for group in local_ingress_groups:
         tmp_ingress = set([])
-        for i in local_ingress:
-            if subpage in get_sub_pages(i.sub_pages):
+        for i in local_ingress_groups[group]:
+            if not i.sub_pages or subpage in get_sub_pages(i.sub_pages):
                 tmp_ingress.add(i)
-        local_ingress = tmp_ingress
-        tmp_ingress_group = {}
-        for group in local_ingress_groups:
-            tmp_ingress = set([])
-            for i in local_ingress_groups[group]:
-                if subpage in get_sub_pages(i.sub_pages):
-                    tmp_ingress.add(i)
-            if len(tmp_ingress) > 0:
-                tmp_ingress_group[group] = tmp_ingress
-        local_ingress_groups = tmp_ingress_group
-        local_sorted_ingress_groups_keys = sorted(local_ingress_groups.keys())
-        tmp_book_marks_group = {}
-        for group in local_global_bookmarks:
-            tmp_book_marks = set([])
-            for bookmark in local_global_bookmarks[group]:
-                if subpage in get_sub_pages(bookmark.sub_pages):
-                    tmp_book_marks.add(bookmark)
-            if len(tmp_book_marks) > 0:
-                tmp_book_marks_group[group] = tmp_book_marks
-        local_global_bookmarks = tmp_book_marks_group
-        local_sorted_global_bookmarks_keys = sorted(local_global_bookmarks.keys())
+        if len(tmp_ingress) > 0:
+            tmp_ingress_group[group] = tmp_ingress
+    local_ingress_groups = tmp_ingress_group
+    local_sorted_ingress_groups_keys = sorted(local_ingress_groups.keys())
+    tmp_book_marks_group = {}
+    for group in local_global_bookmarks:
+        tmp_book_marks = set([])
+        for bookmark in local_global_bookmarks[group]:
+            if not bookmark.sub_pages or subpage in get_sub_pages(bookmark.sub_pages):
+                tmp_book_marks.add(bookmark)
+        if len(tmp_book_marks) > 0:
+            tmp_book_marks_group[group] = tmp_book_marks
+    local_global_bookmarks = tmp_book_marks_group
+    local_sorted_global_bookmarks_keys = sorted(local_global_bookmarks.keys())
 
     config = load_config()
-    return render_template("index.html", title=config["title"], showGreeting=config["showGreeting"],
-                           showSearch=config["showSearch"],
-                           showAppGroups=config["showAppGroups"],
-                           showAppUrls=config["showAppUrls"], showAppStatus=config["showAppStatus"],
-                           showGlobalBookmarks=config["showGlobalBookmarks"],
-                           alwaysTargetBlank=config["alwaysTargetBlank"],
-                           greeting=config["greeting"], ingress=local_ingress,
+
+    greeting = "Welcome, Searcher!"
+    if "greeting" in config:
+        greeting = config["greeting"]
+    title = "Horus"
+    if "title" in config:
+        title = config["title"]
+    background_color = "#232530"
+    if "backgroundColor" in config:
+        background_color = config["backgroundColor"]
+    primary_color = "#232530"
+    if "primaryColor" in config:
+        primary_color = config["primaryColor"]
+    accent_color = "#232530"
+    if "accentColor" in config:
+        accent_color = config["accentColor"]
+    online_color = "#232530"
+    if "onlineColor" in config:
+        online_color = config["onlineColor"]
+    offline_color = "#232530"
+    if "offlineColor" in config:
+        offline_color = config["offlineColor"]
+    show_greeting = True
+    if "showGreeting" in config:
+        show_greeting = config["showGreeting"]
+    show_search = True
+    if "showSearch" in config:
+        show_greeting = config["showSearch"]
+    show_app_groups = True
+    if "showAppGroups" in config:
+        show_app_groups = config["showAppGroups"]
+    show_app_urls = True
+    if "showAppUrls" in config:
+        show_app_urls = config["showAppUrls"]
+    show_app_description = False
+    if "showAppDescription" in config:
+        show_app_description = config["showAppDescription"]
+    show_app_status = True
+    if "showAppStatus" in config:
+        show_app_status = config["showAppStatus"]
+    show_global_bookmarks = False
+    if "showGlobalBookmarks" in config:
+        show_global_bookmarks = config["showGlobalBookmarks"]
+    always_target_blank = False
+    if "alwaysTargetBlank" in config:
+        always_target_blank = config["alwaysTargetBlank"]
+    return render_template("index.html", title=title, showGreeting=show_greeting,
+                           showSearch=show_search,
+                           showAppGroups=show_app_groups,
+                           showAppUrls=show_app_urls, showAppDescription=show_app_description,
+                           showAppStatus=show_app_status,
+                           showGlobalBookmarks=show_global_bookmarks,
+                           alwaysTargetBlank=always_target_blank,
+                           greeting=greeting, ingress=local_ingress,
                            sorted_ingress_groups_keys=local_sorted_ingress_groups_keys,
                            ingress_groups=local_ingress_groups,
                            sorted_global_bookmarks_keys=local_sorted_global_bookmarks_keys,
                            global_bookmarks=local_global_bookmarks,
-                           uptime_kuma_status=uptime_kuma_status, backgroundColor=config["backgroundColor"],
-                           primaryColor=config["primaryColor"], accentColor=config["accentColor"],
-                           onlineColor=config["onlineColor"], offlineColor=config["offlineColor"])
+                           uptime_kuma_status=uptime_kuma_status, backgroundColor=background_color,
+                           primaryColor=primary_color, accentColor=accent_color,
+                           onlineColor=online_color, offlineColor=offline_color)
 
 
 def get_sub_pages(sub_pages):
@@ -107,8 +153,10 @@ def uptime_kuma():
     try:
         print("Getting uptime kuma")
         config = load_config()
-        print(config['uptime-kuma']['url'])
-        api = UptimeKumaApi(os.getenv("UPTIME_KUMA_URL") or config['uptime-kuma']['url'])
+        url = ""
+        if "uptime-kuma" in config and "url" in config:
+            url = config['uptime-kuma']['username']
+        api = UptimeKumaApi(os.getenv("UPTIME_KUMA_URL") or url)
         login()
         print(api.info())
     except:
@@ -118,8 +166,13 @@ def uptime_kuma():
 def login():
     global api
     config = load_config()
-    api.login(os.getenv("UPTIME_KUMA_USERNAME") or config['uptime-kuma']['username'],
-              os.getenv("UPTIME_KUMA_PASSWORD") or config['uptime-kuma']['password'])
+    username = ""
+    password = ""
+    if "uptime-kuma" in config and "username" in config and "password" in config:
+        username = config['uptime-kuma']['username']
+        password = config['uptime-kuma']['password']
+    api.login(os.getenv("UPTIME_KUMA_USERNAME") or username,
+              os.getenv("UPTIME_KUMA_PASSWORD") or password)
 
 
 def get_uptime_kuma_status():
