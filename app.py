@@ -212,9 +212,9 @@ def update_ingress():
 def update_uptime_kuma():
     global ingress, uptime_kuma_status
     print("Uptime Kuma: Update ...")
-    uptime_kuma_status.clear()
-    login()
     try:
+        login()
+        uptime_kuma_status.clear()
         status_list = get_uptime_kuma_status()
         for ing in ingress:
             if ing.uptime_kuma == -1:
