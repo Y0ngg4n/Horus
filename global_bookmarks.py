@@ -21,8 +21,8 @@ def parse_global_bookmarks(config):
                 sub_pages = ""
                 if "subPages" in bookmark:
                     sub_pages = bookmark["subPages"]
-                bookmarks.add(GlobalBookmark(name=name, url=url, icon_url=icon_url,
-                                             target_blank=target_blank, group=bookmark["name"], sub_pages=sub_pages))
+                bookmarks.add(GlobalBookmark(name=bookmark["name"], url=url, icon_url=icon_url,
+                                             target_blank=target_blank, group=name, sub_pages=sub_pages))
             group_bookmarks[name] = bookmarks
         return group_bookmarks
     else:
