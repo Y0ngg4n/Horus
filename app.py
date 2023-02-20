@@ -197,18 +197,18 @@ def update_ingress():
     print("Ingress: Updating ...")
     try:
         ingress = kube.get_ingress()
-        ingress_groups.clear()
+        tmp_ingress_groups = {}
         parse_config_items()
         for ing in ingress:
             if "excludeIngress" in config.keys() and ing.name in config["excludeIngress"]:
                 continue
-            if ing.group in ingress_groups.keys():
-                item_list = set(ingress_groups.get(ing.group))
+            if ing.group in tmp_ingress_groups.keys():
+                item_list = set(tmp_ingress_groups.get(ing.group))
                 item_list.add(ing)
-                ingress_groups[ing.group] = kube.getSortedIngressList(item_list)
+                tmp_ingress_groups[ing.group] = kube.getSortedIngressList(item_list)
             else:
-                ingress_groups[ing.group] = [ing, ]
-        ingress_groups = ingress_groups
+                tmp_ingress_groups[ing.group] = [ing, ]
+        ingress_groups = tmp_ingress_groups
     except Exception as e:
         print("Ingress: Could not update!")
         print(e)
@@ -220,7 +220,7 @@ def update_uptime_kuma():
     print("Uptime Kuma: Update ...")
     try:
         login()
-        uptime_kuma_status.clear()
+        tmp_uptime_kuma_status = {}
         status_list = get_uptime_kuma_status()
         for ing in ingress:
             if ing.uptime_kuma == -1:
@@ -237,12 +237,13 @@ def update_uptime_kuma():
                             latest_heartbeat = data
             if latest_heartbeat:
                 # print(ing.name + " " + str(latest_heartbeat["status"]))
-                uptime_kuma_status[ing] = latest_heartbeat["status"]
+                tmp_uptime_kuma_status[ing] = latest_heartbeat["status"]
+        uptime_kuma_status = tmp_uptime_kuma_status
         print("Uptime Kuma: Updated")
     except Exception as e:
         print("Uptime Kuma: Could not update!")
         print(e)
-        uptime_kuma_status = {}
+        uptime_kuma_status = uptime_kuma_status
 
 
 def run_scheduler():
