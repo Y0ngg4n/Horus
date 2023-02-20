@@ -9,12 +9,13 @@ self-hosted Kubernetes cluster. Thanks to Hajimari for the great inspiration!
 - Display replica status for ingress endpoints
 - Support for non-Kubernetes apps via custom apps config
 - Customizable list of bookmarks
-- Selectable themes and custom theme support
-- Automatic light/dark mode
+- Change colors
 - Add subpages so you show applications only on specific paths
 
 
 ## Installation
+
+### Kubernetes
 
 Currently, I did not have the time to provide a helm chart. But i have put a default deployment vie Kustomize in the [deployment/kustomization](deployment/kustomization) folder.
 You can also just apply all files one by on via
