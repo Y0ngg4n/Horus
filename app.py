@@ -154,12 +154,13 @@ def uptime_kuma():
         print("Getting uptime kuma")
         config = load_config()
         url = ""
-        if "uptime-kuma" in config and "url" in config:
+        if "uptime-kuma" in config and "url" in config["uptime-kuma"]:
             url = config['uptime-kuma']['url']
         api = UptimeKumaApi(os.getenv("UPTIME_KUMA_URL") or url)
         print(api.info())
-    except:
+    except Exception as e:
         print("Could not get Uptime Kuma")
+        print(e)
 
 
 def login():
@@ -169,7 +170,7 @@ def login():
         uptime_kuma()
     username = ""
     password = ""
-    if "uptime-kuma" in config and "username" in config and "password" in config:
+    if "uptime-kuma" in config and "username" in config["uptime-kuma"] and "password" in config["uptime-kuma"]:
         username = config['uptime-kuma']['username']
         password = config['uptime-kuma']['password']
     api.login(os.getenv("UPTIME_KUMA_USERNAME") or username,
