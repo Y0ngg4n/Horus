@@ -234,7 +234,7 @@ def update_uptime_kuma():
                             latest_timestamp = timestamp
                             latest_heartbeat = data
             if latest_heartbeat:
-                print(ing.name + " " + str(latest_heartbeat["status"]))
+                # print(ing.name + " " + str(latest_heartbeat["status"]))
                 tmp_uptime_kuma_status[ing] = latest_heartbeat["status"]
         for ing in tmp_uptime_kuma_status.keys():
             uptime_kuma_status[ing] = tmp_uptime_kuma_status[ing]
