@@ -2,7 +2,7 @@
     <h2 class="text-4xl font-bold p-4">Bookmarks</h2>
     <div class="">
         {%  for group in sorted_global_bookmarks_keys %}
-            <div class="p-4">
+            <div class="p-4 service-item-group">
                 <h2 class="p-4 text-2xl service-item-group-label">{{ group }}</h2>
                 <div class="grid lg:grid-cols-4 md:grid-cols-2 grid-cols-1">
                     {% for gb in global_bookmarks[group] %}

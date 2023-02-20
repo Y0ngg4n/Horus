@@ -14,21 +14,24 @@ self-hosted Kubernetes cluster. Thanks to Hajimari for the great inspiration!
 - Change colors
 - Add subpages so you show applications only on specific paths
 
-
 ## Installation
 
 ### Kubernetes
 
-Currently, I did not have the time to provide a helm chart. But i have put a default deployment vie Kustomize in the [deployment/kustomization](deployment/kustomization) folder.
+Currently, I did not have the time to provide a helm chart. But i have put a default deployment vie Kustomize in
+the [deployment/kustomization](deployment/kustomization) folder.
 You can also just apply all files one by on via
 `kubectl apply -f FILENAME`.
-Just make sure you keep the same order as in the [deployment/kustomization/kustomization.yaml](deployment/kustomization/kustomization.yaml) file.
+Just make sure you keep the same order as in
+the [deployment/kustomization/kustomization.yaml](deployment/kustomization/kustomization.yaml) file.
 
 To update the container to the latest image, just delete the pod, and it will pull the latest.
 Currently, I did not have the time to provide proper versioning.
 
 ### Docker
-You can also just use the [Docker](https://hub.docker.com/r/yonggan/horus) image. This will work fine, but you have to provide all apps via customApps.
+
+You can also just use the [Docker](https://hub.docker.com/r/yonggan/horus) image. This will work fine, but you have to
+provide all apps via customApps.
 Also just ignore the ingress errors.
 
 ## Usage
@@ -115,15 +118,15 @@ custom apps feature. You can pass a list of custom apps inside the config.
 
 Custom apps can be added by configuring a list of apps under an app group.
 
-| Field       | Description                                                                                                                                                                                                                           | Type   |
-|-------------|---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|--------|
-| name        | Name of the custom app (Required)                                                                                                                                                                                                     | String |
-| icon        | Icon name or URL for the custom app                                                                                                                                                                                                   | String |
-| url         | URL of the custom app                                                                                                                                                                                                                 | String |
-| description | Short description of the custom app                                                                                                                                                                                                   | String |
-| targetBlank | Open app in a new window/tab                                                                                                                                                                                                          | Bool   |
-| uptimeKuma  | The Uptime Kuma ID                                                                                                                                                                                                                    | String |
-| subPages    | A comma-seperated list of subPages. This is helpful to show applications only on subPages. E.g. if you set sub-pages to "foo,bar", this app will only gets displayed if you go on https://example.com/foo and https://example.com/bar | String |
+| Field       | Description                                                                                                                                                                                                                                                                                                                                                           | Type   |
+|-------------|-----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|--------|
+| name        | Name of the custom app (Required)                                                                                                                                                                                                                                                                                                                                     | String |
+| icon        | Icon name or URL for the custom app                                                                                                                                                                                                                                                                                                                                   | String |
+| url         | URL of the custom app                                                                                                                                                                                                                                                                                                                                                 | String |
+| description | Short description of the custom app                                                                                                                                                                                                                                                                                                                                   | String |
+| targetBlank | Open app in a new window/tab                                                                                                                                                                                                                                                                                                                                          | Bool   |
+| uptimeKuma  | The Uptime Kuma ID                                                                                                                                                                                                                                                                                                                                                    | String |
+| subPages    | A comma-seperated list of sub-pages. This is helpful to show applications only on sub-pages. E.g. if you set sub-pages to "foo,bar", this app will only gets displayed if you go on https://example.com/foo and https://example.com/bar. If you want to show it on sub-pages and also on the `/` page you can add the sub-page "default" to the comma-seperated list. | String |
 
 #### BookmarkGroup
 
@@ -138,13 +141,13 @@ Bookmarks can be added by configuring a list of bookmarks under a group.
 
 ##### Bookmark
 
-| Field       | Description                                                                                                                                                                                                                           | Type   |
-|-------------|---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|--------|
-| name        | Name of the bookmark (Required)                                                                                                                                                                                                       | String |
-| icon        | Icon name or URL for the bookmark                                                                                                                                                                                                     | String |
-| url         | URL of the bookmark (Required)                                                                                                                                                                                                        | String |
-| targetBlank | Open bookmark in a new window/tab                                                                                                                                                                                                     | Bool   |
-| subPages    | A comma-seperated list of subPages. This is helpful to show applications only on subPages. E.g. if you set sub-pages to "foo,bar", this app will only gets displayed if you go on https://example.com/foo and https://example.com/bar | String |
+| Field       | Description                                                                                                                                                                                                                                                                                                                                                           | Type   |
+|-------------|-----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|--------|
+| name        | Name of the bookmark (Required)                                                                                                                                                                                                                                                                                                                                       | String |
+| icon        | Icon name or URL for the bookmark                                                                                                                                                                                                                                                                                                                                     | String |
+| url         | URL of the bookmark (Required)                                                                                                                                                                                                                                                                                                                                        | String |
+| targetBlank | Open bookmark in a new window/tab                                                                                                                                                                                                                                                                                                                                     | Bool   |
+| subPages    | A comma-seperated list of sub-pages. This is helpful to show applications only on sub-pages. E.g. if you set sub-pages to "foo,bar", this app will only gets displayed if you go on https://example.com/foo and https://example.com/bar. If you want to show it on sub-pages and also on the `/` page you can add the sub-page "default" to the comma-seperated list. | String |
 
 ## Contributing
 
