@@ -1,10 +1,10 @@
 <div class="p-2 service-item">
     <a href={{ ing.url }} {% if alwaysTargetBlank %} target="_blank" {% endif %}>
         {% if showAppStatus and ing.uptime_kuma != -1 %}
-            {% if uptime_kuma_status[ing] %}
-                {% set border_color = onlineColor %}
-            {% else %}
+            {% if uptime_kuma_status[ing] == False %}
                 {% set border_color = offlineColor %}
+            {% else %}
+                {% set border_color = onlineColor %}
             {% endif %}
         {% else %}
             {% set border_color = accentColor %}
