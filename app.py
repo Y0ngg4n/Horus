@@ -31,6 +31,53 @@ api = None
 
 @app.route("/")
 def homepage():
+    return get_index()
+
+
+@app.route("/health")
+def health():
+    return "Ok"
+
+
+@app.route("/<subpage>")
+def subpages(subpage):
+    return get_index(subpage)
+
+
+def get_index(subpage=None):
+    global ingress, ingress_groups, global_bookmarks
+    local_sorted_ingress_groups_keys = sorted(ingress_groups.keys())
+    local_ingress = ingress
+    local_ingress_groups = ingress_groups
+    local_global_bookmarks = global_bookmarks
+    local_sorted_global_bookmarks_keys = sorted(global_bookmarks.keys())
+    if subpage:
+        tmp_ingress = set([])
+        for i in local_ingress:
+            if subpage in get_sub_pages(i.sub_pages):
+                tmp_ingress.add(i)
+        local_ingress = tmp_ingress
+        tmp_ingress_group = {}
+        for group in local_ingress_groups:
+            tmp_ingress = set([])
+            for i in local_ingress_groups[group]:
+                if subpage in get_sub_pages(i.sub_pages):
+                    tmp_ingress.add(i)
+            if len(tmp_ingress) > 0:
+                tmp_ingress_group[group] = tmp_ingress
+        local_ingress_groups = tmp_ingress_group
+        local_sorted_ingress_groups_keys = sorted(local_ingress_groups.keys())
+        tmp_book_marks_group = {}
+        for group in local_global_bookmarks:
+            tmp_book_marks = set([])
+            for bookmark in local_global_bookmarks[group]:
+                if subpage in get_sub_pages(bookmark.sub_pages):
+                    tmp_book_marks.add(bookmark)
+            if len(tmp_book_marks) > 0:
+                tmp_book_marks_group[group] = tmp_book_marks
+        local_global_bookmarks = tmp_book_marks_group
+        local_sorted_global_bookmarks_keys = sorted(local_global_bookmarks.keys())
+
     config = load_config()
     return render_template("index.html", title=config["title"], showGreeting=config["showGreeting"],
                            showSearch=config["showSearch"],
@@ -38,14 +85,21 @@ def homepage():
                            showAppUrls=config["showAppUrls"], showAppStatus=config["showAppStatus"],
                            showGlobalBookmarks=config["showGlobalBookmarks"],
                            alwaysTargetBlank=config["alwaysTargetBlank"],
-                           greeting=config["greeting"], ingress=ingress,
-                           sorted_ingress_groups_keys=sorted(ingress_groups.keys()),
-                           ingress_groups=ingress_groups,
-                           sorted_global_bookmarks_keys=sorted(global_bookmarks.keys()),
-                           global_bookmarks=global_bookmarks,
+                           greeting=config["greeting"], ingress=local_ingress,
+                           sorted_ingress_groups_keys=local_sorted_ingress_groups_keys,
+                           ingress_groups=local_ingress_groups,
+                           sorted_global_bookmarks_keys=local_sorted_global_bookmarks_keys,
+                           global_bookmarks=local_global_bookmarks,
                            uptime_kuma_status=uptime_kuma_status, backgroundColor=config["backgroundColor"],
                            primaryColor=config["primaryColor"], accentColor=config["accentColor"],
                            onlineColor=config["onlineColor"], offlineColor=config["offlineColor"])
+
+
+def get_sub_pages(sub_pages):
+    if sub_pages:
+        return sub_pages.split(",")
+    else:
+        return []
 
 
 def uptime_kuma():
@@ -150,6 +204,7 @@ def parse_config_items():
     if "ingressPollSeconds" in config:
         ingress_poll_seconds = int(config["ingressPollSeconds"])
     return uptime_kuma_poll_seconds, ingress_poll_seconds
+
 
 if __name__ == "__main__":
     ukps, ips = parse_config_items()

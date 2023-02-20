@@ -42,13 +42,13 @@ def parse_ingress(ingress, app_config):
                 ingress_service = IngressService(url=url, name="", description="",
                                                  uptime_kuma=-1,
                                                  icon_url=get_favicon(url), group="",
-                                                 target_blank=False)
+                                                 target_blank=False, sub_pages="")
             else:
                 url = "http://" + host + first_path.path
                 ingress_service = IngressService(url=url, name="", description="",
                                                  uptime_kuma=-1,
                                                  icon_url=get_favicon(url), group="",
-                                                 target_blank=False)
+                                                 target_blank=False, sub_pages="")
 
             ingress_service.group = ingress.metadata.namespace
 
@@ -58,6 +58,7 @@ def parse_ingress(ingress, app_config):
             uptime_kuma = ingress.metadata.annotations.get('horus/uptime-kuma')
             icon_url = ingress.metadata.annotations.get('horus/icon-url')
             target_blank = ingress.metadata.annotations.get('horus/target-blank')
+            sub_pages = ingress.metadata.annotations.get('horus/sub-pages')
             if name:
                 ingress_service.name = name
             else:
@@ -72,6 +73,8 @@ def parse_ingress(ingress, app_config):
                 ingress_service.group = group
             if target_blank:
                 ingress_service.target_blank = target_blank
+            if sub_pages:
+                ingress_service.sub_pages = sub_pages
             return ingress_service
 
 
@@ -99,9 +102,12 @@ def parse_custom_apps(app_config, ingress_groups, ingress_list):
                 uptime_kuma = -1
                 if "uptimeKuma" in app:
                     uptime_kuma = int(app["uptimeKuma"])
+                sub_pages = ""
+                if "subPages" in app:
+                    sub_pages = app["subPages"]
                 ingress_service = IngressService(name=app["name"], url=url, icon_url=icon,
                                                  target_blank=target_blank, group=name,
-                                                 description=description, uptime_kuma=uptime_kuma)
+                                                 description=description, uptime_kuma=uptime_kuma, sub_pages=sub_pages)
                 custom_apps.add(ingress_service)
                 ingress_list.add(ingress_service)
             ingress_groups[name] = getSortedIngressList(custom_apps)
@@ -126,7 +132,7 @@ def get_favicon(url):
 
 class IngressService:
     def __init__(self, name: str, description: str, group: str, url: str, icon_url: str, uptime_kuma: int,
-                 target_blank: bool):
+                 target_blank: bool, sub_pages: str):
         self.name = name
         self.description = description
         self.url = url
@@ -134,3 +140,4 @@ class IngressService:
         self.icon_url = icon_url
         self.uptime_kuma = uptime_kuma
         self.target_blank = target_blank
+        self.sub_pages = sub_pages
