@@ -1,15 +1,13 @@
 from flask import Flask, render_template
 from flask_assets import Bundle, Environment
-from uptime_kuma_api import UptimeKumaApi
 from dotenv import load_dotenv
-import os
 import yaml
 import kube
 import threading
 import time
-from datetime import datetime
 import global_bookmarks as gb
 from waitress import serve
+import uptime_kuma
 
 load_dotenv()
 
@@ -25,10 +23,10 @@ ingress = set([])
 custom_apps_ingress = set([])
 custom_apps_ingress_groups = {}
 ingress_groups = {}
-uptime_kuma_status = {}
 global_bookmarks = {}
-api = None
+uptime_kuma_status = {}
 config = {}
+
 
 @app.route("/")
 def homepage():
@@ -151,37 +149,6 @@ def get_sub_pages(sub_pages):
         return []
 
 
-def uptime_kuma():
-    global api, config
-    try:
-        print("Getting uptime kuma")
-        url = ""
-        if "uptime-kuma" in config and "url" in config["uptime-kuma"]:
-            url = config['uptime-kuma']['url']
-        api = UptimeKumaApi(os.getenv("UPTIME_KUMA_URL") or url)
-        print(api.info())
-    except Exception as e:
-        print("Could not get Uptime Kuma")
-        print(e)
-
-
-def login():
-    global api, config
-    if not api:
-        uptime_kuma()
-    username = ""
-    password = ""
-    if "uptime-kuma" in config and "username" in config["uptime-kuma"] and "password" in config["uptime-kuma"]:
-        username = config['uptime-kuma']['username']
-        password = config['uptime-kuma']['password']
-    api.login(os.getenv("UPTIME_KUMA_USERNAME") or username,
-              os.getenv("UPTIME_KUMA_PASSWORD") or password)
-
-
-def get_uptime_kuma_status():
-    return api.get_important_heartbeats()
-
-
 def load_config():
     with open("config/config.yaml", "r") as stream:
         app.logger.info("Loading config ...")
@@ -192,76 +159,15 @@ def load_config():
             return None
 
 
-def update_ingress():
-    global ingress, ingress_groups, config
-    print("Ingress: Updating ...")
-    try:
-        ingress = kube.get_ingress(config)
-        ingress.union(custom_apps_ingress)
-        tmp_ingress_groups = custom_apps_ingress_groups.copy()
-        for ing in ingress:
-            if "excludeIngress" in config and ing.name in config["excludeIngress"]:
-                continue
-            if ing.group in tmp_ingress_groups:
-                item_list = set(tmp_ingress_groups.get(ing.group))
-                item_list.add(ing)
-                tmp_ingress_groups[ing.group] = kube.getSortedIngressList(item_list)
-            else:
-                tmp_ingress_groups[ing.group] = [ing, ]
-        ingress_groups = tmp_ingress_groups
-        del tmp_ingress_groups
-    except Exception as e:
-        print("Ingress: Could not update!")
-        print(e)
-    print("Ingress: Updated")
-
-
-def update_uptime_kuma():
-    global ingress, uptime_kuma_status
-    print("Uptime Kuma: Update ...")
-    try:
-        login()
-        tmp_uptime_kuma_status = {}
-        status_list = get_uptime_kuma_status()
-        for ing in ingress:
-            if ing.uptime_kuma == -1:
-                continue
-            latest_timestamp = datetime.min
-            latest_heartbeat = None
-            for status in status_list:
-                for data in status["data"]:
-                    if int(data["monitorID"]) == ing.uptime_kuma:
-                        timestamp = data["time"]
-                        timestamp = datetime.strptime(timestamp, "%Y-%m-%d %H:%M:%S.%f")
-                        if timestamp > latest_timestamp:
-                            latest_timestamp = timestamp
-                            latest_heartbeat = data
-            if latest_heartbeat:
-                # print(ing.name + " " + str(latest_heartbeat["status"]))
-                tmp_uptime_kuma_status[ing] = latest_heartbeat["status"]
-        for ing in tmp_uptime_kuma_status.keys():
-            uptime_kuma_status[ing] = tmp_uptime_kuma_status[ing]
-        del tmp_uptime_kuma_status
-        print("Uptime Kuma: Updated")
-    except Exception as e:
-        print("Uptime Kuma: Could not update!")
-        print(e)
-
-
 def uptime_kuma_polling(uptime_kuma_poll_seconds):
     while True:
-        update_uptime_kuma()
+        uptime_kuma.update_uptime_kuma(ingress, uptime_kuma_status)
         time.sleep(uptime_kuma_poll_seconds)
 
 
 def ingress_polling(ingress_poll_seconds):
     while True:
-        update_ingress()
-        print("Ingress Items Count: " + str(len(ingress)))
-        inggroup_count = 0
-        for ing in ingress_groups:
-            inggroup_count += len(ing)
-        print("Ingress Groups Item Count: " + str(inggroup_count))
+        kube.update_ingress(custom_apps_ingress, custom_apps_ingress_groups, ingress, ingress_groups, config)
         time.sleep(ingress_poll_seconds)
 
 
@@ -295,8 +201,9 @@ if __name__ == "__main__":
     ukps, ips, ukd, ingd = parse_config_fixed()
     parse_config_items()
     if not ukd:
-        uptime_kuma()
-        login()
+        uptime_kuma.get_config(config)
+        uptime_kuma.uptime_kuma()
+        uptime_kuma.login()
         uptime_kuma_thread = threading.Thread(target=uptime_kuma_polling, args=(ukps,))
         uptime_kuma_thread.start()
     if not ingd:

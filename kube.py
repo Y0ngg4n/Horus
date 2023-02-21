@@ -118,6 +118,29 @@ def parse_custom_apps(app_config, ingress_groups, ingress_list):
         return ingress_groups, set(getSortedIngressList(ingress_list))
 
 
+def update_ingress(custom_apps_ingress, custom_apps_ingress_groups, ingress, ingress_groups, app_config):
+    print("Ingress: Updating ...")
+    try:
+        ingress = get_ingress(app_config)
+        ingress.union(custom_apps_ingress)
+        tmp_ingress_groups = custom_apps_ingress_groups.copy()
+        for ing in ingress:
+            if "excludeIngress" in app_config and ing.name in app_config["excludeIngress"]:
+                continue
+            if ing.group in tmp_ingress_groups:
+                item_list = set(tmp_ingress_groups.get(ing.group))
+                item_list.add(ing)
+                tmp_ingress_groups[ing.group] = getSortedIngressList(item_list)
+            else:
+                tmp_ingress_groups[ing.group] = [ing, ]
+        ingress_groups = tmp_ingress_groups
+        del tmp_ingress_groups
+    except Exception as e:
+        print("Ingress: Could not update!")
+        print(e)
+    print("Ingress: Updated")
+
+
 def getSortedIngressList(list):
     return sorted(list, key=lambda item: item.name)
 
