@@ -1,4 +1,4 @@
-from flask import Flask, render_template, jsonify
+from flask import Flask, render_template
 from flask_assets import Bundle, Environment
 from uptime_kuma_api import UptimeKumaApi
 from dotenv import load_dotenv
@@ -22,11 +22,13 @@ assets.register("css", css)
 css.build()
 
 ingress = set([])
+custom_apps_ingress = set([])
+custom_apps_ingress_groups = {}
 ingress_groups = {}
 uptime_kuma_status = {}
 global_bookmarks = {}
 api = None
-
+config = {}
 
 @app.route("/")
 def homepage():
@@ -54,6 +56,7 @@ def get_index(subpage=""):
                 not subpage and "default" in get_sub_pages(i.sub_pages)):
             tmp_ingress.add(i)
     local_ingress = kube.getSortedIngressList(tmp_ingress)
+    del tmp_ingress
     tmp_ingress_group = {}
     for group in local_ingress_groups:
         tmp_ingress = set([])
@@ -65,6 +68,7 @@ def get_index(subpage=""):
             tmp_ingress_group[group] = kube.getSortedIngressList(tmp_ingress)
     local_ingress_groups = tmp_ingress_group
     local_sorted_ingress_groups_keys = sorted(local_ingress_groups.keys())
+    del tmp_ingress_group
     tmp_book_marks_group = {}
     for group in local_global_bookmarks:
         tmp_book_marks = set([])
@@ -76,8 +80,7 @@ def get_index(subpage=""):
             tmp_book_marks_group[group] = gb.getSortedBookmarksList(tmp_book_marks)
     local_global_bookmarks = tmp_book_marks_group
     local_sorted_global_bookmarks_keys = sorted(local_global_bookmarks.keys())
-
-    config = load_config()
+    del tmp_book_marks_group
 
     greeting = "Welcome, Searcher!"
     if "greeting" in config:
@@ -149,10 +152,9 @@ def get_sub_pages(sub_pages):
 
 
 def uptime_kuma():
-    global api
+    global api, config
     try:
         print("Getting uptime kuma")
-        config = load_config()
         url = ""
         if "uptime-kuma" in config and "url" in config["uptime-kuma"]:
             url = config['uptime-kuma']['url']
@@ -164,8 +166,7 @@ def uptime_kuma():
 
 
 def login():
-    global api
-    config = load_config()
+    global api, config
     if not api:
         uptime_kuma()
     username = ""
@@ -192,23 +193,23 @@ def load_config():
 
 
 def update_ingress():
-    global ingress, ingress_groups
-    config = load_config()
+    global ingress, ingress_groups, config
     print("Ingress: Updating ...")
     try:
-        ingress = kube.get_ingress()
-        tmp_ingress_groups = {}
-        parse_config_items()
+        ingress = kube.get_ingress(config)
+        ingress.union(custom_apps_ingress)
+        tmp_ingress_groups = custom_apps_ingress_groups.copy()
         for ing in ingress:
-            if "excludeIngress" in config.keys() and ing.name in config["excludeIngress"]:
+            if "excludeIngress" in config and ing.name in config["excludeIngress"]:
                 continue
-            if ing.group in tmp_ingress_groups.keys():
+            if ing.group in tmp_ingress_groups:
                 item_list = set(tmp_ingress_groups.get(ing.group))
                 item_list.add(ing)
                 tmp_ingress_groups[ing.group] = kube.getSortedIngressList(item_list)
             else:
                 tmp_ingress_groups[ing.group] = [ing, ]
         ingress_groups = tmp_ingress_groups
+        del tmp_ingress_groups
     except Exception as e:
         print("Ingress: Could not update!")
         print(e)
@@ -240,6 +241,7 @@ def update_uptime_kuma():
                 tmp_uptime_kuma_status[ing] = latest_heartbeat["status"]
         for ing in tmp_uptime_kuma_status.keys():
             uptime_kuma_status[ing] = tmp_uptime_kuma_status[ing]
+        del tmp_uptime_kuma_status
         print("Uptime Kuma: Updated")
     except Exception as e:
         print("Uptime Kuma: Could not update!")
@@ -255,17 +257,24 @@ def uptime_kuma_polling(uptime_kuma_poll_seconds):
 def ingress_polling(ingress_poll_seconds):
     while True:
         update_ingress()
+        print("Ingress Items Count: " + str(len(ingress)))
+        inggroup_count = 0
+        for ing in ingress_groups:
+            inggroup_count += len(ing)
+        print("Ingress Groups Item Count: " + str(inggroup_count))
         time.sleep(ingress_poll_seconds)
 
 
 def parse_config_items():
-    global ingress, ingress_groups, global_bookmarks
-    config = load_config()
+    global custom_apps_ingress, custom_apps_ingress_groups, ingress, ingress_groups, global_bookmarks, config
     global_bookmarks = gb.parse_global_bookmarks(config)
-    ingress_groups, ingress = kube.parse_custom_apps(config, ingress_groups, set(ingress))
+    custom_apps_ingress_groups, custom_apps_ingress = kube.parse_custom_apps(config, ingress_groups, set(ingress))
+    ingress = custom_apps_ingress.copy()
+    ingress_groups = custom_apps_ingress_groups.copy()
 
 
 def parse_config_fixed():
+    global config
     config = load_config()
     uptime_kuma_poll_seconds = 30
     ingress_poll_seconds = 60
@@ -284,6 +293,7 @@ def parse_config_fixed():
 
 if __name__ == "__main__":
     ukps, ips, ukd, ingd = parse_config_fixed()
+    parse_config_items()
     if not ukd:
         uptime_kuma()
         login()

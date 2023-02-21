@@ -1,13 +1,11 @@
 from kubernetes import client, config
 
-import app
 import favicon
 
 icon_cache = {}
 
 
-def get_ingress():
-    app_config = app.load_config()
+def get_ingress(app_config):
     # Configs can be set in Configuration class directly or using helper utility
     ingress_list = set([])
     config.load_incluster_config()
@@ -126,14 +124,13 @@ def getSortedIngressList(list):
 
 def get_favicon(url):
     try:
-        if url in icon_cache:
+        if url not in icon_cache:
+            icons = favicon.get(url)
+            if icons[0]:
+                icon_cache[url] = icons[0].url
+            else:
+                icon_cache[url] = url.rstrip("/") + "/favicon.ico"
             return icon_cache[url]
-        icons = favicon.get(url)
-        favicon_hit = url.rstrip("/") + "/favicon.ico"
-        if icons[0]:
-            favicon_hit = icons[0].url
-        icon_cache[url] = favicon_hit
-        return favicon_hit
     except:
         return url.rstrip("/") + "/favicon.ico"
 
