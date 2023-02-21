@@ -279,13 +279,13 @@ def parse_config_items():
 
 
 if __name__ == "__main__":
-    ukps, ips, ukd, id = parse_config_items()
+    ukps, ips, ukd, ingd = parse_config_items()
     if not ukd:
         uptime_kuma()
         login()
         uptime_kuma_thread = threading.Thread(target=uptime_kuma_polling, args=(ukps,))
         uptime_kuma_thread.start()
-    if not id:
+    if not ingd:
         ingress_thread = threading.Thread(target=ingress_polling, args=(ips,))
         ingress_thread.start()
     serve(app, host="0.0.0.0", port=8080)
