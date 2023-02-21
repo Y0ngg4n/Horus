@@ -68,9 +68,7 @@ def parse_ingress(ingress, app_config):
             if uptime_kuma:
                 ingress_service.uptime_kuma = int(uptime_kuma)
             if icon_url:
-                ingress_service.iconUrl = icon_url
-            else:
-                print("No icon for " + ingress_service.name)
+                ingress_service.icon_url = icon_url
             if url:
                 ingress_service.url = url.rstrip("/")
             if group:
