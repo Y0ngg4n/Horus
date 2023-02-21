@@ -92,6 +92,7 @@ It is a selector for selecting namespaces either selecting all namespaces or a l
 
 |   Field    |                                           Description                                           | Default | Type     |
 |:----------:|:-----------------------------------------------------------------------------------------------:|:-------:|----------|
+|  disable   |              Disable ingress scanning. Use this if you only want to use customApps              |  false  | bool     |
 |    any     |  Boolean describing whether all namespaces are selected in contrast to a list restricting them  |  true   | bool     |
 | anyEnabled | Boolean describing whether all ingress are enabled and showed (only if subPages is not defined) |  true   | bool     |
 | namespaces |                                     List of namespace names                                     |  null   | []string |
@@ -102,6 +103,7 @@ This are the Setting for connection with Uptime Kuma.
 
 |  Field   |             Description              | Default | Type   |
 |:--------:|:------------------------------------:|:-------:|--------|
+| disabled |     Disable Uptime Kuma scanning     |  false  | bool   |
 |   url    | The URL of your Uptime Kuma instance |   ""    | string |
 | username |       The Uptime Kuma username       |   ""    | string |
 | password |       The Uptime Kuma password       |   ""    | string |
