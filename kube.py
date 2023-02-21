@@ -3,6 +3,7 @@ from kubernetes import client, config
 import app
 import favicon
 
+
 def get_ingress():
     app_config = app.load_config()
     # Configs can be set in Configuration class directly or using helper utility
@@ -23,6 +24,7 @@ def get_ingress():
                 if parsed_ingress:
                     ingress_list.add(parsed_ingress)
     return set(ingress_list)
+
 
 def parse_ingress(ingress, app_config):
     first_rule = ingress.spec.rules[0]
@@ -67,6 +69,8 @@ def parse_ingress(ingress, app_config):
                 ingress_service.uptime_kuma = int(uptime_kuma)
             if icon_url:
                 ingress_service.iconUrl = icon_url
+            else:
+                print("No icon for " + ingress_service.name)
             if url:
                 ingress_service.url = url.rstrip("/")
             if group:
@@ -129,6 +133,7 @@ def get_favicon(url):
             return url.rstrip("/") + "/favicon.ico"
     except:
         return url.rstrip("/") + "/favicon.ico"
+
 
 class IngressService:
     def __init__(self, name: str, description: str, group: str, url: str, icon_url: str, uptime_kuma: int,
