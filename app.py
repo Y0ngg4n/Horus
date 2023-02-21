@@ -1,4 +1,3 @@
-import schedule
 from flask import Flask, render_template, jsonify
 from flask_assets import Bundle, Environment
 from uptime_kuma_api import UptimeKumaApi
@@ -247,10 +246,16 @@ def update_uptime_kuma():
         print(e)
 
 
-def run_scheduler():
+def uptime_kuma_polling(uptime_kuma_poll_seconds):
     while True:
-        schedule.run_pending()
-        time.sleep(1)
+        update_uptime_kuma()
+        time.sleep(uptime_kuma_poll_seconds)
+
+
+def ingress_polling(ingress_poll_seconds):
+    while True:
+        update_ingress()
+        time.sleep(ingress_poll_seconds)
 
 
 def parse_config_items():
@@ -264,29 +269,23 @@ def parse_config_items():
         uptime_kuma_poll_seconds = int(config["uptimeKumaPollSeconds"])
     if "ingressPollSeconds" in config:
         ingress_poll_seconds = int(config["ingressPollSeconds"])
-    return uptime_kuma_poll_seconds, ingress_poll_seconds
-
-
-def checkDisabled():
-    config = load_config()
     uptime_kuma_disabled = False
     ingress_disabled = False
     if "uptime-kuma" in config and "disabled" in config["uptime-kuma"] and config["uptime-kuma"]["disabled"]:
         uptime_kuma_disabled = True
     if "ingress" in config and "disabled" in config["ingress"] and config["ingress"]["disabled"]:
         ingress_disabled = True
-    return uptime_kuma_disabled, ingress_disabled
+    return uptime_kuma_poll_seconds, ingress_poll_seconds, uptime_kuma_disabled, ingress_disabled
+
 
 if __name__ == "__main__":
-    ukps, ips = parse_config_items()
-    ukd, id = checkDisabled()
+    ukps, ips, ukd, id = parse_config_items()
     if not ukd:
         uptime_kuma()
         login()
-        schedule.every(ips).seconds.do(update_uptime_kuma)
+        uptime_kuma_thread = threading.Thread(target=uptime_kuma_polling, args=(ukps,))
+        uptime_kuma_thread.start()
     if not id:
-        schedule.every(ukps).seconds.do(update_ingress)
-    schedule.run_all()
-    schedule_thread = threading.Thread(target=run_scheduler)
-    schedule_thread.start()
+        ingress_thread = threading.Thread(target=ingress_polling, args=(ips,))
+        ingress_thread.start()
     serve(app, host="0.0.0.0", port=8080)

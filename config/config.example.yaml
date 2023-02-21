@@ -19,14 +19,14 @@ ingressPollSeconds: 60
 excludeIngress:
   - horus
 ingress:
-  disabled: True
+  disabled: false
   all: true
   allEnabled: true
   namespaces:
     - media
     - storage
 uptime-kuma:
-  disabled: True
+  disabled: false
   url: https://example.uptime-kuma.com
   username: admin
   password: SUPERSECRETPASSWORD
