@@ -260,8 +260,12 @@ def ingress_polling(ingress_poll_seconds):
 
 def parse_config_items():
     global ingress, ingress_groups, global_bookmarks
-    global_bookmarks = gb.parse_global_bookmarks(load_config())
-    ingress_groups, ingress = kube.parse_custom_apps(load_config(), ingress_groups, set(ingress))
+    config = load_config()
+    global_bookmarks = gb.parse_global_bookmarks(config)
+    ingress_groups, ingress = kube.parse_custom_apps(config, ingress_groups, set(ingress))
+
+
+def parse_config_fixed():
     config = load_config()
     uptime_kuma_poll_seconds = 30
     ingress_poll_seconds = 60
@@ -279,7 +283,7 @@ def parse_config_items():
 
 
 if __name__ == "__main__":
-    ukps, ips, ukd, ingd = parse_config_items()
+    ukps, ips, ukd, ingd = parse_config_fixed()
     if not ukd:
         uptime_kuma()
         login()

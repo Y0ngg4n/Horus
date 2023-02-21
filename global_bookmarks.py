@@ -1,8 +1,7 @@
 import kube
 
-
 def parse_global_bookmarks(config):
-    if "globalBookmarks" not in config.keys():
+    if "globalBookmarks" not in config:
         return {}
     bm = config["globalBookmarks"]
     if bm:
