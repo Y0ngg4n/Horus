@@ -7,7 +7,8 @@ import threading
 import time
 import global_bookmarks as gb
 from waitress import serve
-import uptime_kuma
+
+from uptime_kuma import UptimeKuma
 
 load_dotenv()
 
@@ -19,13 +20,10 @@ css = Bundle("src/main.css", output="dist/main.css")
 assets.register("css", css)
 css.build()
 
-ingress = set([])
-custom_apps_ingress = set([])
-custom_apps_ingress_groups = {}
-ingress_groups = {}
-global_bookmarks = {}
-uptime_kuma_status = {}
 config = {}
+uk = UptimeKuma()
+kube = kube.Kube()
+gb = gb.GlobalBookMarks()
 
 
 @app.route("/")
@@ -44,16 +42,16 @@ def subpages(subpage):
 
 
 def get_index(subpage=""):
-    global ingress, ingress_groups, global_bookmarks
-    local_ingress = ingress
-    local_ingress_groups = ingress_groups
-    local_global_bookmarks = global_bookmarks
+    print(uk.url)
+    local_ingress = kube.ingress
+    local_ingress_groups = kube.ingress_groups
+    local_global_bookmarks = gb.global_bookmarks
     tmp_ingress = set([])
     for i in local_ingress:
         if (not i.sub_pages and not subpage) or (subpage in get_sub_pages(i.sub_pages)) or (
                 not subpage and "default" in get_sub_pages(i.sub_pages)):
             tmp_ingress.add(i)
-    local_ingress = kube.getSortedIngressList(tmp_ingress)
+    local_ingress = kube.get_sorted_ingress_list(tmp_ingress)
     del tmp_ingress
     tmp_ingress_group = {}
     for group in local_ingress_groups:
@@ -63,7 +61,7 @@ def get_index(subpage=""):
                     not subpage and "default" in get_sub_pages(i.sub_pages)):
                 tmp_ingress.add(i)
         if len(tmp_ingress) > 0:
-            tmp_ingress_group[group] = kube.getSortedIngressList(tmp_ingress)
+            tmp_ingress_group[group] = kube.get_sorted_ingress_list(tmp_ingress)
     local_ingress_groups = tmp_ingress_group
     local_sorted_ingress_groups_keys = sorted(local_ingress_groups.keys())
     del tmp_ingress_group
@@ -75,7 +73,7 @@ def get_index(subpage=""):
                     not subpage and "default" in get_sub_pages(bookmark.sub_pages)):
                 tmp_book_marks.add(bookmark)
         if len(tmp_book_marks) > 0:
-            tmp_book_marks_group[group] = gb.getSortedBookmarksList(tmp_book_marks)
+            tmp_book_marks_group[group] = gb.get_sorted_bookmarks_list(tmp_book_marks)
     local_global_bookmarks = tmp_book_marks_group
     local_sorted_global_bookmarks_keys = sorted(local_global_bookmarks.keys())
     del tmp_book_marks_group
@@ -137,7 +135,7 @@ def get_index(subpage=""):
                            ingress_groups=local_ingress_groups,
                            sorted_global_bookmarks_keys=local_sorted_global_bookmarks_keys,
                            global_bookmarks=local_global_bookmarks,
-                           uptime_kuma_status=uptime_kuma_status, backgroundColor=background_color,
+                           uptime_kuma_status=uk.uptime_kuma_status, backgroundColor=background_color,
                            primaryColor=primary_color, accentColor=accent_color,
                            onlineColor=online_color, offlineColor=offline_color)
 
@@ -161,22 +159,19 @@ def load_config():
 
 def uptime_kuma_polling(uptime_kuma_poll_seconds):
     while True:
-        uptime_kuma.update_uptime_kuma(ingress, uptime_kuma_status)
+        uk.update(kube.ingress)
         time.sleep(uptime_kuma_poll_seconds)
 
 
 def ingress_polling(ingress_poll_seconds):
     while True:
-        kube.update_ingress(custom_apps_ingress, custom_apps_ingress_groups, ingress, ingress_groups, config)
+        kube.update_ingress()
         time.sleep(ingress_poll_seconds)
 
 
 def parse_config_items():
-    global custom_apps_ingress, custom_apps_ingress_groups, ingress, ingress_groups, global_bookmarks, config
-    global_bookmarks = gb.parse_global_bookmarks(config)
-    custom_apps_ingress_groups, custom_apps_ingress = kube.parse_custom_apps(config, ingress_groups, set(ingress))
-    ingress = custom_apps_ingress.copy()
-    ingress_groups = custom_apps_ingress_groups.copy()
+    gb.parse_global_bookmarks(config)
+    kube.parse_custom_apps()
 
 
 def parse_config_fixed():
@@ -199,11 +194,12 @@ def parse_config_fixed():
 
 if __name__ == "__main__":
     ukps, ips, ukd, ingd = parse_config_fixed()
+    uk.get_config(config)
+    kube.get_config(config)
     parse_config_items()
     if not ukd:
-        uptime_kuma.get_config(config)
-        uptime_kuma.uptime_kuma()
-        uptime_kuma.login()
+        uk.connect()
+        uk.login()
         uptime_kuma_thread = threading.Thread(target=uptime_kuma_polling, args=(ukps,))
         uptime_kuma_thread.start()
     if not ingd:
