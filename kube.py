@@ -29,7 +29,7 @@ class Kube:
         v1 = client.NetworkingV1Api()
         if app_config["ingress"]["all"]:
             ret = v1.list_ingress_for_all_namespaces(watch=False)
-            for i in ret.items():
+            for i in ret.items:
                 parsed_ingress = self.parse_ingress(i)
                 if parsed_ingress:
                     ingress_list.add(parsed_ingress)
