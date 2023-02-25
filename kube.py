@@ -32,6 +32,7 @@ class Kube:
             for i in ret.items:
                 if i:
                     parsed_ingress = self.parse_ingress(i)
+                    print("Parsed Ingress")
                     if parsed_ingress:
                         ingress_list.add(parsed_ingress)
         else:
