@@ -141,6 +141,7 @@ class Kube:
             self.get_ingress(self.app_config)
             self.ingress.union(self.custom_apps_ingress)
             tmp_ingress_groups = self.custom_apps_ingress_groups.copy()
+            print(self.ingress)
             for ing in self.ingress:
                 if "excludeIngress" in self.app_config and ing.name in self.app_config["excludeIngress"]:
                     continue
