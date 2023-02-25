@@ -16,6 +16,7 @@ class UptimeKuma:
         self.username = ""
         self.password = ""
         self.uptime_kuma_status = {}
+        self.api = None
 
     def get_config(self, config):
         if "uptime-kuma" in config and "username" in config["uptime-kuma"] and "password" in config["uptime-kuma"]:
@@ -26,14 +27,15 @@ class UptimeKuma:
         if "uptime-kuma" in config and "url" in config["uptime-kuma"]:
             self.url = config['uptime-kuma']['url']
         self.url = os.getenv("UPTIME_KUMA_URL") or self.url
-        print(self.url)
 
     def connect(self):
         try:
             print("Getting Uptime Kuma")
-            self.api = UptimeKumaApi(self.url)
-            print(self.api.info())
-            return self.api
+            if not self.api:
+                self.api = UptimeKumaApi(self.url)
+            else:
+                self.api.connect()
+            print("Connected")
         except Exception as e:
             print("Could not get Uptime Kuma")
             print(e)
@@ -42,6 +44,7 @@ class UptimeKuma:
         if not self.api:
             self.connect()
         self.api.login(self.username, self.password)
+        print("Logged in")
 
     def update(self, ingress):
         print("Uptime Kuma: Update ...")
@@ -74,4 +77,8 @@ class UptimeKuma:
             print(e)
 
     def get_current_status(self):
-        return self.api.get_important_heartbeats()
+        status_list = self.api.get_important_heartbeats()
+        return status_list
+
+    def disconnect(self):
+        self.api.disconnect()
