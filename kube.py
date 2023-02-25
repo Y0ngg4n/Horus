@@ -164,7 +164,7 @@ class Kube:
         try:
             if url not in icon_cache:
                 icons = favicon.get(url)
-                if icons[0]:
+                if icons[0] and icons[0].url:
                     icon_cache[url] = icons[0].url
                 else:
                     icon_cache[url] = url.rstrip("/") + "/favicon.ico"
