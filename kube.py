@@ -46,57 +46,58 @@ class Kube:
         return set(ingress_list)
 
     def parse_ingress(self, item):
-        first_rule = item.spec.rules[0]
-        if first_rule:
-            host = first_rule.host
-            first_path = first_rule.http.paths[0]
-            if first_path:
-                if not self.app_config['ingress']['allEnabled']:
-                    enabled = item.metadata.annotations.get('horus/enabled')
-                    if not enabled:
-                        return None
-                if item.spec.tls[0] and host in item.spec.tls[0].hosts:
-                    url = "https://" + host + first_path.path.rstrip("/")
-                    ingress_service = IngressService(url=url, name="", description="",
-                                                     uptime_kuma=-1,
-                                                     icon_url=self.get_favicon(url), group="",
-                                                     target_blank=False, sub_pages="")
-                else:
-                    url = "http://" + host + first_path.path.rstrip("/")
-                    ingress_service = IngressService(url=url, name="", description="",
-                                                     uptime_kuma=-1,
-                                                     icon_url=self.get_favicon(url), group="",
-                                                     target_blank=False, sub_pages="")
+        if item and item.spec and item.spec.rules:
+            first_rule = item.spec.rules[0]
+            if first_rule:
+                host = first_rule.host
+                first_path = first_rule.http.paths[0]
+                if first_path:
+                    if not self.app_config['ingress']['allEnabled']:
+                        enabled = item.metadata.annotations.get('horus/enabled')
+                        if not enabled:
+                            return None
+                    if item.spec.tls[0] and host in item.spec.tls[0].hosts:
+                        url = "https://" + host + first_path.path.rstrip("/")
+                        ingress_service = IngressService(url=url, name="", description="",
+                                                         uptime_kuma=-1,
+                                                         icon_url=self.get_favicon(url), group="",
+                                                         target_blank=False, sub_pages="")
+                    else:
+                        url = "http://" + host + first_path.path.rstrip("/")
+                        ingress_service = IngressService(url=url, name="", description="",
+                                                         uptime_kuma=-1,
+                                                         icon_url=self.get_favicon(url), group="",
+                                                         target_blank=False, sub_pages="")
 
-                ingress_service.group = item.metadata.namespace
+                    ingress_service.group = item.metadata.namespace
 
-                name = item.metadata.annotations.get('horus/name')
-                group = item.metadata.annotations.get('horus/group')
-                description = item.metadata.annotations.get('horus/description')
-                uptime_kuma = item.metadata.annotations.get('horus/uptime-kuma')
-                icon_url = item.metadata.annotations.get('horus/icon-url')
-                url = item.metadata.annotations.get('horus/url')
-                target_blank = item.metadata.annotations.get('horus/target-blank')
-                sub_pages = item.metadata.annotations.get('horus/sub-pages')
-                if name:
-                    ingress_service.name = name
-                else:
-                    ingress_service.name = item.metadata.name
-                if description:
-                    ingress_service.description = description
-                if uptime_kuma:
-                    ingress_service.uptime_kuma = int(uptime_kuma)
-                if icon_url:
-                    ingress_service.icon_url = icon_url
-                if url:
-                    ingress_service.url = url.rstrip("/")
-                if group:
-                    ingress_service.group = group
-                if target_blank:
-                    ingress_service.target_blank = target_blank
-                if sub_pages:
-                    ingress_service.sub_pages = sub_pages
-                return ingress_service
+                    name = item.metadata.annotations.get('horus/name')
+                    group = item.metadata.annotations.get('horus/group')
+                    description = item.metadata.annotations.get('horus/description')
+                    uptime_kuma = item.metadata.annotations.get('horus/uptime-kuma')
+                    icon_url = item.metadata.annotations.get('horus/icon-url')
+                    url = item.metadata.annotations.get('horus/url')
+                    target_blank = item.metadata.annotations.get('horus/target-blank')
+                    sub_pages = item.metadata.annotations.get('horus/sub-pages')
+                    if name:
+                        ingress_service.name = name
+                    else:
+                        ingress_service.name = item.metadata.name
+                    if description:
+                        ingress_service.description = description
+                    if uptime_kuma:
+                        ingress_service.uptime_kuma = int(uptime_kuma)
+                    if icon_url:
+                        ingress_service.icon_url = icon_url
+                    if url:
+                        ingress_service.url = url.rstrip("/")
+                    if group:
+                        ingress_service.group = group
+                    if target_blank:
+                        ingress_service.target_blank = target_blank
+                    if sub_pages:
+                        ingress_service.sub_pages = sub_pages
+                    return ingress_service
 
     def parse_custom_apps(self):
         if "customApps" not in self.app_config:
