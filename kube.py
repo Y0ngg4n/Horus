@@ -30,6 +30,7 @@ class Kube:
         if app_config["ingress"]["all"]:
             ret = v1.list_ingress_for_all_namespaces(watch=False)
             for i in ret.items:
+                print(i)
                 parsed_ingress = self.parse_ingress(i)
                 if parsed_ingress:
                     ingress_list.add(parsed_ingress)
