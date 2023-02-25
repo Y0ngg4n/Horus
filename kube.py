@@ -42,7 +42,7 @@ class Kube:
                         parsed_ingress = self.parse_ingress(i)
                         if parsed_ingress:
                             ingress_list.add(parsed_ingress)
-        self.ingress = set(ingress_list)
+        return set(ingress_list)
 
     def parse_ingress(self, item):
         first_rule = item.spec.rules[0]
@@ -138,10 +138,10 @@ class Kube:
     def update_ingress(self, ):
         print("Ingress: Updating ...")
         try:
-            self.get_ingress(self.app_config)
+            self.ingress = self.get_ingress(self.app_config)
+            print(self.ingress)
             self.ingress.union(self.custom_apps_ingress)
             tmp_ingress_groups = self.custom_apps_ingress_groups.copy()
-            print(self.ingress)
             for ing in self.ingress:
                 if "excludeIngress" in self.app_config and ing.name in self.app_config["excludeIngress"]:
                     continue
