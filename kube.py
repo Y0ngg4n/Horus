@@ -31,18 +31,25 @@ class Kube:
             ret = v1.list_ingress_for_all_namespaces(watch=False)
             for i in ret.items:
                 if i:
-                    print("Parsed Ingress")
-                    parsed_ingress = self.parse_ingress(i)
-                    if parsed_ingress:
-                        ingress_list.add(parsed_ingress)
+                    try:
+                        parsed_ingress = self.parse_ingress(i)
+                        if parsed_ingress:
+                            ingress_list.add(parsed_ingress)
+                    except Exception as e:
+                        print("Could not parse kubernetes ingress")
+                        print(e)
         else:
             for ns in app_config['ingress']['namespaces']:
                 ret = v1.list_namespaced_ingress(namespace=ns, watch=False)
                 for i in ret["items"]:
                     if i:
-                        parsed_ingress = self.parse_ingress(i)
-                        if parsed_ingress:
-                            ingress_list.add(parsed_ingress)
+                        try:
+                            parsed_ingress = self.parse_ingress(i)
+                            if parsed_ingress:
+                                ingress_list.add(parsed_ingress)
+                        except Exception as e:
+                            print("Could not parse kubernetes ingress")
+                            print(e)
         return set(ingress_list)
 
     def parse_ingress(self, item):
