@@ -144,6 +144,7 @@ class Kube:
                 self.ingress = self.get_ingress(self.app_config)
             except Exception as e:
                 print("Ingress: Could not get Ingress from Kubernetes")
+                print(e)
             self.ingress.union(self.custom_apps_ingress)
             tmp_ingress_groups = self.custom_apps_ingress_groups.copy()
             for ing in self.ingress:
