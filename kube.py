@@ -55,6 +55,7 @@ class Kube:
     def parse_ingress(self, item):
         if item and item.spec and item.spec.rules:
             first_rule = item.spec.rules[0]
+            print("First role exists")
             if first_rule:
                 host = first_rule.host
                 first_path = first_rule.http.paths[0]
