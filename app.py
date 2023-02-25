@@ -42,10 +42,9 @@ def subpages(subpage):
 
 
 def get_index(subpage=""):
-    print(uk.url)
-    local_ingress = kube.ingress
-    local_ingress_groups = kube.ingress_groups
-    local_global_bookmarks = gb.global_bookmarks
+    local_ingress = kube.ingress.copy()
+    local_ingress_groups = kube.ingress_groups.copy()
+    local_global_bookmarks = gb.global_bookmarks.copy()
     tmp_ingress = set([])
     for i in local_ingress:
         if (not i.sub_pages and not subpage) or (subpage in get_sub_pages(i.sub_pages)) or (

@@ -77,7 +77,6 @@ class Kube:
                 url = item.metadata.annotations.get('horus/url')
                 target_blank = item.metadata.annotations.get('horus/target-blank')
                 sub_pages = item.metadata.annotations.get('horus/sub-pages')
-                print("Debug Point")
                 if name:
                     ingress_service.name = name
                 else:
