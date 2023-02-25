@@ -12,7 +12,7 @@
         <img alt="icon"
              class="w-16 h-16 object-cover object-center flex-shrink-0 rounded-full mr-4 text-transparent"
              src="{{ ing.icon_url }}"
-             onerror="if (this.src != '/static/images/offline.png') this.src = '/static/images/offline.png';">
+             onerror="if (this.src !== '/static/images/offline.png') this.src = '/static/images/offline.png';">
         <div class="flex-grow">
             <p class="text-base title-font font-medium service-item-name break-all">{{ ing.name }}</p>
             {% if showAppDescription %}
