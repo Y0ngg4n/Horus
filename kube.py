@@ -54,7 +54,7 @@ class Kube:
 
     def parse_ingress(self, item):
         print("#######")
-        if item and item.spec and item.spec.rules:
+        if item and item.spec and item.spec.rules and len(item.spec.rules) > 0:
             first_rule = item.spec.rules[0]
             if first_rule:
                 print("First role exists")
@@ -66,7 +66,7 @@ class Kube:
                         enabled = item.metadata.annotations.get('horus/enabled')
                         if not enabled:
                             return None
-                    if item.spec.tls[0] and host in item.spec.tls[0].hosts:
+                    if item.spec.tls and len(item.spec.tls) > 0 and item.spec.tls[0] and host in item.spec.tls[0].hosts:
                         url = "https://" + host + first_path.path.rstrip("/")
                         ingress_service = IngressService(url=url, name="", description="",
                                                          uptime_kuma=-1,
