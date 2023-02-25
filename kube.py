@@ -30,16 +30,18 @@ class Kube:
         if app_config["ingress"]["all"]:
             ret = v1.list_ingress_for_all_namespaces(watch=False)
             for i in ret.items:
-                parsed_ingress = self.parse_ingress(i)
-                if parsed_ingress:
-                    ingress_list.add(parsed_ingress)
+                if i:
+                    parsed_ingress = self.parse_ingress(i)
+                    if parsed_ingress:
+                        ingress_list.add(parsed_ingress)
         else:
             for ns in app_config['ingress']['namespaces']:
                 ret = v1.list_namespaced_ingress(namespace=ns, watch=False)
                 for i in ret["items"]:
-                    parsed_ingress = self.parse_ingress(i)
-                    if parsed_ingress:
-                        ingress_list.add(parsed_ingress)
+                    if i:
+                        parsed_ingress = self.parse_ingress(i)
+                        if parsed_ingress:
+                            ingress_list.add(parsed_ingress)
         self.ingress = set(ingress_list)
 
     def parse_ingress(self, item):
@@ -47,7 +49,6 @@ class Kube:
         if first_rule:
             host = first_rule.host
             first_path = first_rule.http.paths[0]
-            print("Debug Point")
             if first_path:
                 if not self.app_config['ingress']['allEnabled']:
                     enabled = item.metadata.annotations.get('horus/enabled')
@@ -76,6 +77,7 @@ class Kube:
                 url = item.metadata.annotations.get('horus/url')
                 target_blank = item.metadata.annotations.get('horus/target-blank')
                 sub_pages = item.metadata.annotations.get('horus/sub-pages')
+                print("Debug Point")
                 if name:
                     ingress_service.name = name
                 else:
