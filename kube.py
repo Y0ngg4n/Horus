@@ -53,13 +53,15 @@ class Kube:
         return set(ingress_list)
 
     def parse_ingress(self, item):
+        print("#######")
         if item and item.spec and item.spec.rules:
             first_rule = item.spec.rules[0]
-            print("First role exists")
             if first_rule:
+                print("First role exists")
                 host = first_rule.host
                 first_path = first_rule.http.paths[0]
                 if first_path:
+                    print("First path exists")
                     if not self.app_config['ingress']['allEnabled']:
                         enabled = item.metadata.annotations.get('horus/enabled')
                         if not enabled:
@@ -77,6 +79,7 @@ class Kube:
                                                          icon_url=self.get_favicon(url), group="",
                                                          target_blank=False, sub_pages="")
 
+                    print("blaaaa")
                     ingress_service.group = item.metadata.namespace
 
                     name = item.metadata.annotations.get('horus/name')
