@@ -50,6 +50,7 @@ def get_index(subpage=""):
         if (not i.sub_pages and not subpage) or (subpage in get_sub_pages(i.sub_pages)) or (
                 not subpage and "default" in get_sub_pages(i.sub_pages)):
             tmp_ingress.add(i)
+            print("Icon:" + i.icon_url)
     local_ingress = kube.get_sorted_ingress_list(tmp_ingress)
     del tmp_ingress
     tmp_ingress_group = {}
