@@ -183,7 +183,7 @@ class Kube:
                     icon_cache[url] = icons[0].url
                 else:
                     icon_cache[url] = url.rstrip("/") + "/favicon.ico"
-                return icon_cache[url]
+            return icon_cache[url]
         except:
             return url.rstrip("/") + "/favicon.ico"
 
