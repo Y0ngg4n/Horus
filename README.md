@@ -1,7 +1,8 @@
 # Horus
 
 Horus is a [Hajimari](https://github.com/toboshii/hajimari) similar startpage designed to be the entrypoint for your
-self-hosted Kubernetes cluster. Thanks to Hajimari for the great inspiration!
+self-hosted Kubernetes cluster. It can scan all your Ingress to provide them via the page and does even support sub-pages.
+Thanks to Hajimari for the great inspiration!
 
 ## Screenshots
 ![Screenshot1](docs/screenshot1.png)
