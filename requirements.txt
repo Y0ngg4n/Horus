@@ -1,5 +1,4 @@
 Flask
-Flask-Assets
 pytailwindcss
 uptime-kuma-api
 python-dotenv

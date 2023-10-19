@@ -1,5 +1,4 @@
 from flask import Flask, render_template
-from flask_assets import Bundle, Environment
 from dotenv import load_dotenv
 import yaml
 import kube
@@ -13,12 +12,6 @@ from uptime_kuma import UptimeKuma
 load_dotenv()
 
 app: Flask = Flask(__name__)
-
-assets = Environment(app)
-css = Bundle("src/main.css", output="dist/main.css")
-
-assets.register("css", css)
-css.build()
 
 config = {}
 uk = UptimeKuma()
